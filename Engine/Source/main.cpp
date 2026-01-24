@@ -1,5 +1,6 @@
 #include "Platform/Platform.h"
 #include "Core/Logging/Log.h"
+#include "Core/Logging/Assertions.h"
 
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/Windows/WindowsApplication.h"
@@ -18,6 +19,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	GE_LOG(Log, "Hello, World!");
 	GE_LOG(Verbose, "Hello, World!");
 	GE_LOG(VeryVerbose, "Hello, World!");
+
+	//GE_CHECK(1 == 0);
+	//GE_ASSERT(1 == 0);
 
 	WindowDescription winDesc;
 	winApp.InitWindow(winDesc);

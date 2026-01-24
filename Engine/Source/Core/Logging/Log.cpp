@@ -16,8 +16,8 @@ void CLog::LogMessage(ELogVerbosity verbosity, const char* msg, ...)
 	const char* verbosityStrings[7] =
 	{
 		"Fatal: ",
-		"Warning: ",
 		"Error: ",
+		"Warning: ",
 		"Display: ",
 		"Log: ",
 		"Verbose: ",
