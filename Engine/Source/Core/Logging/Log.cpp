@@ -41,6 +41,7 @@ void CLog::LogMessage(ELogVerbosity verbosity, const char* msg, ...)
 	{
 	case Fatal:
 		LogToConsole(outputBuffer);
+		LogCrash(outputBuffer);
 		break;
 	case Error:
 		LogToConsole(outputBuffer);
@@ -85,5 +86,13 @@ void CLog::LogToConsole(const char* msg, bool isError)
 
 	DWORD bytesWritten = 0;
 	WriteConsoleA(outputHandle, msg, (DWORD)strlen(msg), &bytesWritten, nullptr);
+#endif
+}
+
+void CLog::LogCrash(const char* msg)
+{
+#ifdef GE_WINDOWS_PLATFORM
+	MessageBoxA(nullptr, msg, "Error", MB_ICONERROR | MB_OKCANCEL);
+	ExitProcess(0);
 #endif
 }

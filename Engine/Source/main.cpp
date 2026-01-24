@@ -11,7 +11,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	CLog::Init();
 
-	GE_LOG(Fatal, "Hello, World!");
+	//GE_LOG(Fatal, "Hello, World!");
 	GE_LOG(Error, "Hello, World!");
 	GE_LOG(Warning, "Hello, World!");
 	GE_LOG(Display, "Hello, World!");

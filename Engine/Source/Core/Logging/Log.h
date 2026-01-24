@@ -24,6 +24,8 @@ private:
 	static void LogToIDE(const char* msg);
 
 	static void LogToConsole(const char* msg, bool isError = true);
+
+	static void LogCrash(const char* msg);
 };
 
 #define GE_LOG(verbosity, msg, ...) CLog::LogMessage(verbosity, msg, __VA_ARGS__);
