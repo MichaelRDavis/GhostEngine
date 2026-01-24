@@ -25,7 +25,7 @@ struct WindowDescription
 		height = 1080;
 		posX = 0;
 		posY = 0;
-		windowMode = EWindowMode::Windowed;
+		windowMode = EWindowMode::Fullscreen;
 		isHidden = false;
 	}
 };

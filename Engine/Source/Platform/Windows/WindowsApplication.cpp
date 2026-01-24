@@ -22,6 +22,11 @@ void CWindowsApplication::Init(HINSTANCE instance)
 		m_instance = GetModuleHandleA(0);
 	}
 
+#ifdef _DEBUG
+	AllocConsole();
+	SetConsoleTitleA("Sandbox Console");
+#endif
+
 	const POINT anchorPoint = { 0, 0 };
 	m_monitorHandle = MonitorFromPoint(anchorPoint, MONITOR_DEFAULTTOPRIMARY);
 
@@ -115,6 +120,10 @@ void CWindowsApplication::Destroy()
 		DestroyWindow(m_windowHandle);
 		m_windowHandle = nullptr;
 	}
+
+#ifdef _DEBUG
+	FreeConsole();
+#endif
 }
 
 LRESULT CWindowsApplication::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
