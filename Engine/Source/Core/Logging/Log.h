@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Platform/Platform.h"
+
 enum ELogVerbosity
 {
 	Fatal,
@@ -23,7 +25,7 @@ public:
 private:
 	static void LogToIDE(const char* msg);
 
-	static void LogToConsole(const char* msg, bool isError = true);
+	static void LogToConsole(const char* msg, U8 color, bool isError = true);
 
 	static void LogCrash(const char* msg);
 };

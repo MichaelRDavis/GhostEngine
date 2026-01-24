@@ -40,26 +40,26 @@ void CLog::LogMessage(ELogVerbosity verbosity, const char* msg, ...)
 	switch (verbosity)
 	{
 	case Fatal:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		LogCrash(outputBuffer);
 		break;
 	case Error:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	case Warning:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	case Display:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	case Log:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	case Verbose:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	case VeryVerbose:
-		LogToConsole(outputBuffer);
+		LogToConsole(outputBuffer, verbosity);
 		break;
 	}
 }
@@ -71,7 +71,7 @@ void CLog::LogToIDE(const char* msg)
 #endif
 }
 
-void CLog::LogToConsole(const char* msg, bool isError)
+void CLog::LogToConsole(const char* msg, U8 color, bool isError)
 {
 #ifdef GE_WINDOWS_PLATFORM
 	HANDLE outputHandle = nullptr;
@@ -83,6 +83,9 @@ void CLog::LogToConsole(const char* msg, bool isError)
 	{
 		outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
+
+	static U8 verbosityColors[7] = { 4, 4, 6, 8, 8, 8, 8, };
+	SetConsoleTextAttribute(outputHandle, verbosityColors[color]);
 
 	DWORD bytesWritten = 0;
 	WriteConsoleA(outputHandle, msg, (DWORD)strlen(msg), &bytesWritten, nullptr);
