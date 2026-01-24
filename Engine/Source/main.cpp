@@ -1,6 +1,7 @@
 #include "Platform/Platform.h"
 #include "Core/Logging/Log.h"
 #include "Core/Logging/Assertions.h"
+#include "Platform/Timer/Timer.h"
 
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/Windows/WindowsApplication.h"
@@ -11,6 +12,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	winApp.Init(hInstance);
 
 	CLog::Init();
+
+	CTimer::StartTimer();
 
 	//GE_LOG(Fatal, "Hello, World!");
 	GE_LOG(Error, "Hello, World!");
