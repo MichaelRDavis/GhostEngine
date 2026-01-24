@@ -3,8 +3,9 @@
 CWindowsApplication::CWindowsApplication()
 {
 	m_instance = nullptr;
+	m_monitorHandle = nullptr;
+	m_monitorInfo = { };
 	m_windowHandle = nullptr;
-	m_monitor = nullptr;
 	m_description = { };
 }
 
@@ -20,15 +21,24 @@ void CWindowsApplication::Init(HINSTANCE instance)
 	{
 		m_instance = GetModuleHandleA(0);
 	}
+
+	const POINT anchorPoint = { 0, 0 };
+	m_monitorHandle = MonitorFromPoint(anchorPoint, MONITOR_DEFAULTTOPRIMARY);
+
+	memset(&m_monitorInfo, 0, sizeof(MONITORINFO));
+	m_monitorInfo.cbSize = sizeof(MONITORINFO);
+	GetMonitorInfo(m_monitorHandle, &m_monitorInfo);
 }
 
 void CWindowsApplication::InitWindow(const WindowDescription& description)
 {
+	m_description = description;
+
 	U32 winClassStyle = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	WNDCLASSEX windowClass = { };
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.style = winClassStyle;
-	windowClass.lpfnWndProc = WinProc;
+	windowClass.lpfnWndProc = CWindowsApplication::WinProc;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = m_instance;
@@ -45,13 +55,34 @@ void CWindowsApplication::InitWindow(const WindowDescription& description)
 	}
 
 	U32 windowStyle = WS_OVERLAPPEDWINDOW;
+	if (description.windowMode == EWindowMode::Fullscreen)
+	{
+		windowStyle |= WS_MAXIMIZE;
+	}
+
+	I32 width = 0;
+	I32 height = 0;
+	if (description.windowMode == EWindowMode::Fullscreen)
+	{
+		width = m_monitorInfo.rcWork.right - m_monitorInfo.rcWork.left;
+		height = m_monitorInfo.rcWork.bottom - m_monitorInfo.rcWork.top;
+	}
+	else if (description.windowMode == EWindowMode::Windowed)
+	{
+		RECT rect;
+		SetRect(&rect, 0, 0, description.width, description.height);
+		AdjustWindowRect(&rect, windowStyle, false);
+		width = rect.right - rect.left;
+		height = rect.bottom - rect.top;
+	}
+
 	m_windowHandle = CreateWindowEx(
 		0,
 		L"WinAppClass",
 		L"Sandbox",
 		windowStyle,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
+		width,
+		height,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		nullptr,

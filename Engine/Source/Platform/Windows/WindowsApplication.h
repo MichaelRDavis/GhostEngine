@@ -49,7 +49,8 @@ private:
 
 private:
 	HINSTANCE m_instance;
-	HMONITOR m_monitor;
+	HMONITOR m_monitorHandle;
+	MONITORINFO m_monitorInfo;
 	HWND m_windowHandle;
 	WindowDescription m_description;
 };
