@@ -1,0 +1,12 @@
+# Ignore Visual Studio project files
+*.vs
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Ignore engine built binaries 
+**/Binaries/**
+
+# Ignore engine generated intermediates
+**/Intermediates/**
