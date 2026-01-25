@@ -52,9 +52,9 @@ void CEngineLoop::Init()
 
 void CEngineLoop::Run()
 {
-#ifdef _DEBUG
-	GE_LOG(Log, CMemoryTracker::GetMemoryUsage());
-#endif
+//#ifdef _DEBUG
+//	GE_LOG(Log, CMemoryTracker::GetMemoryUsage());
+//#endif
 
 	while (m_isRunning)
 	{
