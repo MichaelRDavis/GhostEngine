@@ -1,7 +1,7 @@
 #include "EngineLoop.h"
-#include "Core/Logging/Log.h"
-#include "Core/Logging/Assertions.h"
 #include "Platform/Timer/Timer.h"
+#include "Core/Core.h"
+#include "GObject.h"
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/Windows/WindowsApplication.h"
 #endif
@@ -23,7 +23,12 @@ CEngineLoop::~CEngineLoop()
 void CEngineLoop::Init()
 {
 	CLog::Init();
+
 	CTimer::StartTimer();
+
+	CMemoryTracker::Init();
+
+	CGObject* testObject = new CGObject();
 
 	//GE_LOG(Fatal, "Hello, World!");
 	GE_LOG(Error, "Hello, World!");
@@ -41,10 +46,16 @@ void CEngineLoop::Init()
 
 	m_isInitialised = true;
 	m_isRunning = true;
+
+	delete testObject;
 }
 
 void CEngineLoop::Run()
 {
+#ifdef _DEBUG
+	GE_LOG(Log, CMemoryTracker::GetMemoryUsage());
+#endif
+
 	while (m_isRunning)
 	{
 		m_application.HandleMessages();
@@ -53,5 +64,6 @@ void CEngineLoop::Run()
 
 void CEngineLoop::Exit()
 {
+	CMemoryTracker::Destroy();
 	CLog::Destroy();
 }
