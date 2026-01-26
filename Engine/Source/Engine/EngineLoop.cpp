@@ -30,6 +30,21 @@ void CEngineLoop::Init()
 
 	CGObject* testObject = new CGObject();
 
+	TArrayList<U32> testArray;
+	testArray.Init(10, 5);
+	if (!testArray.IsEmpty())
+	{
+		U32 size = testArray.Size();
+		U32 capacity = testArray.Capacity();
+
+		for (U32 i = 0; i < testArray.Size(); i++)
+		{
+			GE_LOG(Log, "%d", testArray[i]);
+		}
+	}
+
+	testArray.Clear();
+
 	//GE_LOG(Fatal, "Hello, World!");
 	GE_LOG(Error, "Hello, World!");
 	GE_LOG(Warning, "Hello, World!");
