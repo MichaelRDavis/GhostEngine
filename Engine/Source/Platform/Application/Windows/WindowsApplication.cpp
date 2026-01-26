@@ -1,5 +1,6 @@
 #include "WindowsApplication.h"
 
+#ifdef GE_WINDOWS_PLATFORM
 CWindowsApplication::CWindowsApplication()
 {
 	m_instance = nullptr;
@@ -14,9 +15,8 @@ CWindowsApplication::~CWindowsApplication()
 	Destroy();
 }
 
-void CWindowsApplication::Init(HINSTANCE instance)
+void CWindowsApplication::Init()
 {
-	m_instance = instance;
 	if (m_instance == nullptr)
 	{
 		m_instance = GetModuleHandleA(0);
@@ -137,3 +137,4 @@ LRESULT CWindowsApplication::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+#endif

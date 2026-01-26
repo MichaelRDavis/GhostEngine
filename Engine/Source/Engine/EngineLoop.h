@@ -2,14 +2,12 @@
 
 #include "Platform/Platform.h"
 
-#ifdef GE_WINDOWS_PLATFORM
-class CWindowsApplication;
-#endif
+class IApplication;
 
 class CEngineLoop
 {
 public:
-	CEngineLoop(CWindowsApplication& app);
+	CEngineLoop();
 	~CEngineLoop();
 
 	void Init();
@@ -19,7 +17,7 @@ public:
 	void Exit();
 
 private:
-	CWindowsApplication& m_application;
+	IApplication* m_application;
 
 	F64 m_lastTime;
 

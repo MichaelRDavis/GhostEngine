@@ -1,14 +1,13 @@
 #include "EngineLoop.h"
 #include "Platform/Timer/Timer.h"
 #include "Core/Core.h"
-#include "GObject.h"
 #ifdef GE_WINDOWS_PLATFORM
-#include "Platform/Windows/WindowsApplication.h"
+#include "Platform/Application/Windows/WindowsApplication.h"
 #endif
 
-CEngineLoop::CEngineLoop(CWindowsApplication& app)
-	: m_application(app)
+CEngineLoop::CEngineLoop()
 {
+	m_application = nullptr;
 	m_lastTime = 0.0f;
 	m_isInitialised = false;
 	m_isRunning = false;
@@ -23,12 +22,15 @@ CEngineLoop::~CEngineLoop()
 void CEngineLoop::Init()
 {
 	CLog::Init();
-
 	CTimer::StartTimer();
-
 	CMemoryTracker::Init();
 
-	CGObject* testObject = new CGObject();
+	WindowDescription winDesc;
+#ifdef GE_WINDOWS_PLATFORM
+	m_application = new CWindowsApplication();
+#endif
+	m_application->Init();
+	m_application->InitWindow(winDesc);
 
 	TArrayList<U32> testArray;
 	testArray.Init(10, 5);
@@ -56,13 +58,8 @@ void CEngineLoop::Init()
 	//GE_CHECK(1 == 0);
 	//GE_ASSERT(1 == 0);
 
-	WindowDescription winDesc;
-	m_application.InitWindow(winDesc);
-
 	m_isInitialised = true;
 	m_isRunning = true;
-
-	delete testObject;
 }
 
 void CEngineLoop::Run()
@@ -73,12 +70,18 @@ void CEngineLoop::Run()
 
 	while (m_isRunning)
 	{
-		m_application.HandleMessages();
+		m_application->HandleMessages();
 	}
 }
 
 void CEngineLoop::Exit()
 {
+	if (m_application != nullptr)
+	{
+		delete m_application;
+		m_application = nullptr;
+	}
+
 	CMemoryTracker::Destroy();
 	CLog::Destroy();
 }
