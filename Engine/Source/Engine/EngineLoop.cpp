@@ -1,9 +1,25 @@
 #include "EngineLoop.h"
 #include "Platform/Timer/Timer.h"
 #include "Core/Core.h"
+#include "Engine/Engine.h"
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/Application/Windows/WindowsApplication.h"
 #endif
+
+extern class CEngine* gEngine = nullptr;
+
+extern class CEngine* GetEngine()
+{
+	GE_CHECK(gEngine);
+
+	if (gEngine != nullptr)
+	{
+		return gEngine;
+	}
+
+	GE_LOG(Fatal, "Global engine pointer is NULL!");
+	return nullptr;
+}
 
 CEngineLoop::CEngineLoop()
 {
@@ -31,6 +47,9 @@ void CEngineLoop::Init()
 #endif
 	m_application->Init();
 	m_application->InitWindow(winDesc);
+
+	gEngine = new CEngine();
+	gEngine->Init();
 
 	TArrayList<U32> testArray;
 	testArray.Init(10, 5);
@@ -76,8 +95,16 @@ void CEngineLoop::Run()
 
 void CEngineLoop::Exit()
 {
+	if (gEngine != nullptr)
+	{
+		gEngine->Destroy();
+		delete gEngine;
+		gEngine = nullptr;
+	}
+
 	if (m_application != nullptr)
 	{
+		m_application->Destroy();
 		delete m_application;
 		m_application = nullptr;
 	}
