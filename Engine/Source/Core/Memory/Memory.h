@@ -21,6 +21,8 @@ public:
 	static void AlignedFree(void* ptr, EMemoryTag tag = MEM_TAG_None);
 };
 
+#pragma warning(push)
+#pragma warning(disable : 4595)
 GE_INLINE void* operator new(size_t size)
 {
 	return CMemory::Malloc(size, MEM_TAG_New);
@@ -60,3 +62,4 @@ GE_INLINE void operator delete[](void* ptr, EMemoryTag tag)
 {
 	CMemory::Free(ptr, tag);
 }
+#pragma warning(pop)
