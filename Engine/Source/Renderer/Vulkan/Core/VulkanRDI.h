@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/RDI.h"
+#include "Renderer/Vulkan/VulkanIncludes.h"
 
 class CVulkanRDI : public IRDI
 {
@@ -13,4 +14,10 @@ public:
 	void Render();
 
 	void Destroy();
+
+private:
+	void InitInstance();
+
+private:
+	VkInstance m_instance;
 };

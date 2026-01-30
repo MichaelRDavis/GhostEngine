@@ -17,3 +17,4 @@
 #include <new>
 #include <vector>			// TDOO: Remove replace with GhostLib TArrayList
 #include <unordered_map>	// TODO: Remove replace with GhostLib THashMap
+#include <algorithm>
