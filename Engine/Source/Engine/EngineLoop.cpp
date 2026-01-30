@@ -8,21 +8,6 @@
 #include "Platform/Application/Linux/LinuxApplication.h"
 #endif
 
-extern class CEngine* gEngine = nullptr;
-
-extern class CEngine* GetEngine()
-{
-	GE_CHECK(gEngine);
-
-	if (gEngine != nullptr)
-	{
-		return gEngine;
-	}
-
-	GE_LOG(Fatal, "Global engine pointer is NULL!");
-	return nullptr;
-}
-
 CEngineLoop::CEngineLoop()
 {
 	m_application = nullptr;
@@ -94,6 +79,8 @@ void CEngineLoop::Run()
 	while (m_isRunning)
 	{
 		m_application->HandleMessages();
+
+		gEngine->Update(0.0f);
 	}
 }
 
