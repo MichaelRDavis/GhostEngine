@@ -5,6 +5,9 @@
 *.vcxproj.filters
 *.vcxproj.user
 
+# Ignore ThirdPartySDKs folder, downloaded by end-user
+**/ThirdPartySDKs/**
+
 # Ignore engine built binaries 
 **/Binaries/**
 

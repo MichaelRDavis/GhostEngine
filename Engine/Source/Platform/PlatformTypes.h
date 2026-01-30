@@ -11,4 +11,15 @@ typedef unsigned __int32 U32;
 typedef unsigned __int64 U64;
 typedef float F32;
 typedef double F64;
+#elif __GNUC__
+typedef char I8;
+typedef short I16;
+typedef long int I32;
+typedef long long int I64;
+typedef unsigned char U8;
+typedef unsigned short U16;
+typedef unsigned long int U32;
+typedef unsigned long long int U64;
+typedef float F32;
+typedef double F64;
 #endif
