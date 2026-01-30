@@ -10,4 +10,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	return 0;
 }
+#elif GE_LINUX_PLATFORM
+int main()
+{
+	CEngineLoop engineLoop;
+	engineLoop.Init();
+	engineLoop.Run();
+
+	return 0;
+}
 #endif

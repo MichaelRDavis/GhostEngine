@@ -4,6 +4,8 @@
 #include "Engine/Engine.h"
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/Application/Windows/WindowsApplication.h"
+#elif GE_LINUX_PLATFORM
+#include "Platform/Application/Linux/LinuxApplication.h"
 #endif
 
 extern class CEngine* gEngine = nullptr;
@@ -44,6 +46,8 @@ void CEngineLoop::Init()
 	WindowDescription winDesc;
 #ifdef GE_WINDOWS_PLATFORM
 	m_application = new CWindowsApplication();
+#elif GE_LINUX_PLATFORM
+	m_application = CLinuxApplication();
 #endif
 	m_application->Init();
 	m_application->InitWindow(winDesc);
