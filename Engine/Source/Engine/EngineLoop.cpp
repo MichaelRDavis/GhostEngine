@@ -32,7 +32,7 @@ void CEngineLoop::Init()
 #ifdef GE_WINDOWS_PLATFORM
 	m_application = new CWindowsApplication();
 #elif GE_LINUX_PLATFORM
-	m_application = CLinuxApplication();
+	m_application = new CLinuxApplication();
 #endif
 	m_application->Init();
 	m_application->InitWindow(winDesc);
