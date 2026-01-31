@@ -13,6 +13,13 @@ enum ELogVerbosity
 	VeryVerbose
 };
 
+struct LogEntry
+{
+	U32 category;
+	ELogVerbosity verbosity;
+	const char* msg;
+};
+
 class CLog
 {
 public:
@@ -27,7 +34,15 @@ private:
 
 	static void LogToConsole(const char* msg, U8 color, bool isError = true);
 
+	static void LogToFile(const char* msg);
+
 	static void LogCrash(const char* msg);
+
+private:
+#ifdef GE_WINDOWS_PLATFORM
+	static HANDLE m_logFile;
+#endif
+	static std::vector<LogEntry> m_logEntries;
 };
 
 #define GE_LOG(verbosity, msg, ...) CLog::LogMessage(verbosity, msg, __VA_ARGS__);

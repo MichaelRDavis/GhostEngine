@@ -5,6 +5,9 @@
 *.vcxproj.filters
 *.vcxproj.user
 
+# Ignore other file types
+*.txt
+
 # Ignore ThirdPartySDKs folder, downloaded by end-user
 **/ThirdPartySDKs/**
 
