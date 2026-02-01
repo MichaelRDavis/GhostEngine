@@ -1,11 +1,12 @@
 #include "EngineLoop.h"
 #include "Platform/Timer/Timer.h"
+#include "Platform/OS/Interface/IPlatform.h"
 #include "Core/Core.h"
 #include "Engine/Engine.h"
 #ifdef GE_WINDOWS_PLATFORM
-#include "Platform/Application/Windows/WindowsApplication.h"
+#include "Platform/OS/Windows/WindowsApplication.h"
 #elif GE_LINUX_PLATFORM
-#include "Platform/Application/Linux/LinuxApplication.h"
+#include "Platform/OS/Linux/LinuxApplication.h"
 #endif
 
 CEngineLoop::CEngineLoop()
@@ -24,9 +25,15 @@ CEngineLoop::~CEngineLoop()
 
 void CEngineLoop::Init()
 {
+	PlatformInfo info = IPlatform::GetPlatformInfo();
+
 	CLog::Init();
 	CTimer::StartTimer();
 	CMemoryTracker::Init();
+
+	GE_LOG(Log, "CPU Clock Speed: %d MHz", info.cpuClockSpeed);
+	GE_LOG(Log, "CPU Cores: %d", info.cpuCores);
+	GE_LOG(Log, "System Physical Memory: %d", info.memory);
 
 	WindowDescription winDesc;
 #ifdef GE_WINDOWS_PLATFORM
@@ -39,32 +46,6 @@ void CEngineLoop::Init()
 
 	gEngine = new CEngine();
 	gEngine->Init();
-
-	TArrayList<U32> testArray;
-	testArray.Init(10, 5);
-	if (!testArray.IsEmpty())
-	{
-		U32 size = testArray.Size();
-		U32 capacity = testArray.Capacity();
-
-		for (U32 i = 0; i < testArray.Size(); i++)
-		{
-			GE_LOG(Log, "%d", testArray[i]);
-		}
-	}
-
-	testArray.Clear();
-
-	//GE_LOG(Fatal, "Hello, World!");
-	GE_LOG(Error, "Hello, World!");
-	GE_LOG(Warning, "Hello, World!");
-	GE_LOG(Display, "Hello, World!");
-	GE_LOG(Log, "Hello, World!");
-	GE_LOG(Verbose, "Hello, World!");
-	GE_LOG(VeryVerbose, "Hello, World!");
-
-	//GE_CHECK(1 == 0);
-	//GE_ASSERT(1 == 0);
 
 	m_isInitialised = true;
 	m_isRunning = true;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Platform/Application/IApplication.h"
+#include "Platform/OS/Interface/IApplication.h"
 
 #ifdef GE_WINDOWS_PLATFORM
 class CWindowsApplication : public IApplication
