@@ -37,7 +37,7 @@ PlatformInfo IPlatform::GetPlatformInfo()
 	info.memory = (U32)(memStatus.ullTotalPhys / (1024 * 1024));
 
 	// Is OS 64-bit
-#if defined(__x86_64__) || defined(_M_X64)
+#ifdef GE_CPU_ARCHITECTURE_64
 	info.is64Bit = true;
 #else
 	info.is64Bit = false;

@@ -3,13 +3,11 @@
 
 void* CMemory::Malloc(U64 size, EMemoryTag tag)
 {
-	CMemoryTracker::AddAllocation(size, tag);
 	return malloc(size);
 }
 
 void* CMemory::AlignedMalloc(U64 size, U8 alignment, EMemoryTag tag)
 {
-	CMemoryTracker::AddAllocation(size, tag);
 #ifdef GE_WINDOWS_PLATFORM
 	return _aligned_malloc(size, alignment);
 #endif
@@ -33,13 +31,11 @@ void* CMemory::Zero(void* dest, U64 size)
 
 void CMemory::Free(void* ptr, EMemoryTag tag)
 {
-	CMemoryTracker::RemoveAllocation(sizeof(ptr), tag);
 	free(ptr);
 }
 
 void CMemory::AlignedFree(void* ptr, EMemoryTag tag)
 {
-	CMemoryTracker::RemoveAllocation(sizeof(ptr), tag);
 #ifdef GE_WINDOWS_PLATFORM
 	_aligned_free(ptr);
 #endif
