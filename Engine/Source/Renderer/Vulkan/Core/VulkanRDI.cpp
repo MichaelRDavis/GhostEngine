@@ -2,19 +2,51 @@
 #include "Engine/Engine.h"
 #include "Core/Logging/Log.h"
 
+#ifdef _DEBUG
+static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
+	VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+	VkDebugUtilsMessageTypeFlagsEXT messageType,
+	const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+	void* userData)
+{
+	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+	{
+		GE_LOG(Error, "{%d} Validation Layer: Error: {%s}: {%s}", callbackData->messageIdNumber, callbackData->pMessageIdName, callbackData->pMessage)
+	}
+	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+	{
+		GE_LOG(Error, "{%d} Validation Layer: Warning: {%s}: {%s}", callbackData->messageIdNumber, callbackData->pMessageIdName, callbackData->pMessage)
+	}
+	else if (messageType & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
+	{
+		GE_LOG(Log, "{%d} Validation Layer: Performance warning: {%s}: {%s}", callbackData->messageIdNumber, callbackData->pMessageIdName, callbackData->pMessage)
+	}
+	else
+	{
+		GE_LOG(Log,"{%d} Validation Layer: Information: {%s}: {%s}", callbackData->messageIdNumber, callbackData->pMessageIdName, callbackData->pMessage)
+	}
+
+	return VK_FALSE;
+}
+#endif
+
 CVulkanRDI::CVulkanRDI()
 {
 	m_instance = VK_NULL_HANDLE;
+#ifdef _DEBUG
+	m_debugCallback = VK_NULL_HANDLE;
+#endif
 }
 
 CVulkanRDI::~CVulkanRDI()
 {
-
+	Destroy();
 }
 
 void CVulkanRDI::Init()
 {
 	InitInstance();
+	InitDevice();
 }
 
 void CVulkanRDI::Render()
@@ -24,11 +56,20 @@ void CVulkanRDI::Render()
 
 void CVulkanRDI::Destroy()
 {
-
+	DestroyInstance();
+	DestroyDevice();
 }
 
 void CVulkanRDI::InitInstance()
 {
+	GE_LOG(Log, "Initializing Vulkan instance.")
+
+	if (volkInitialize())
+	{
+		GE_LOG(Fatal, "Failed to initialize volk.");
+		return;
+	}
+
 	std::vector<const char*> requiredInstanceExtensions;
 	requiredInstanceExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
 
@@ -99,9 +140,46 @@ void CVulkanRDI::InitInstance()
 	instanceInfo.enabledExtensionCount = (U32)requiredInstanceExtensions.size();
 	instanceInfo.ppEnabledExtensionNames = requiredInstanceExtensions.data();
 
+#ifdef _DEBUG
+	VkDebugUtilsMessengerCreateInfoEXT debugUtilsCreateInfo = {};
+	debugUtilsCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+	if (hasDebugUtils)
+	{
+		debugUtilsCreateInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+		debugUtilsCreateInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+		debugUtilsCreateInfo.pfnUserCallback = DebugCallback;
+
+		instanceInfo.pNext = &debugUtilsCreateInfo;
+	}
+#endif
+
 	if (vkCreateInstance(&instanceInfo, nullptr, &m_instance))
 	{
 		GE_LOG(Fatal, "Failed to create Vulkan instance");
 		return;
 	}
+
+	volkLoadInstance(m_instance);
+
+#ifdef _DEBUG
+	if (hasDebugUtils)
+	{
+		vkCreateDebugUtilsMessengerEXT(m_instance, &debugUtilsCreateInfo, nullptr, &m_debugCallback);
+	}
+#endif
+}
+
+void CVulkanRDI::DestroyInstance()
+{
+
+}
+
+void CVulkanRDI::InitDevice()
+{
+
+}
+
+void CVulkanRDI::DestroyDevice()
+{
+
 }

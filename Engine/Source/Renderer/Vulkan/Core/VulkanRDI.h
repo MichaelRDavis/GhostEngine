@@ -17,7 +17,14 @@ public:
 
 private:
 	void InitInstance();
+	void DestroyInstance();
+
+	void InitDevice();
+	void DestroyDevice();
 
 private:
 	VkInstance m_instance;
+#ifdef _DEBUG
+	VkDebugUtilsMessengerEXT m_debugCallback;
+#endif
 };
