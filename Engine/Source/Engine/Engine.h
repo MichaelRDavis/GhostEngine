@@ -3,6 +3,7 @@
 #include "Platform/Platform.h"
 #include "Core/Logging/Assertions.h"
 
+struct Viewport;
 class IRDI;
 
 class CEngine
@@ -11,7 +12,7 @@ public:
 	CEngine();
 	~CEngine();
 
-	void Init();
+	void Init(const Viewport& viewport);
 
 	void Update(F32 deltaTime);
 

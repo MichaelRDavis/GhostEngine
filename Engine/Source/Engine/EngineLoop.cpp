@@ -3,6 +3,7 @@
 #include "Platform/OS/Interface/IPlatform.h"
 #include "Core/Core.h"
 #include "Engine/Engine.h"
+#include "Renderer/RDI.h"
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/OS/Windows/WindowsApplication.h"
 #elif GE_LINUX_PLATFORM
@@ -44,8 +45,13 @@ void CEngineLoop::Init()
 	m_application->Init();
 	m_application->InitWindow(winDesc);
 
+	Viewport viewport;
+	viewport.width = m_application->GetWindowWidth();
+	viewport.height = m_application->GetWindowHeight();
+	viewport.viewportHandle = m_application->GetWindowHandle();
+
 	gEngine = new CEngine();
-	gEngine->Init();
+	gEngine->Init(viewport);
 
 	m_isInitialised = true;
 	m_isRunning = true;

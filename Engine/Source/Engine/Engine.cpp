@@ -11,11 +11,11 @@ CEngine::~CEngine()
 	Destroy();
 }
 
-void CEngine::Init()
+void CEngine::Init(const Viewport& viewport)
 {
 	// TODO: Check for Vulkan support
 	m_renderer = new CVulkanRDI();
-	m_renderer->Init();
+	m_renderer->Init(viewport);
 }
 
 void CEngine::Update(F32 deltaTime)

@@ -17,6 +17,8 @@ public:
 
 	void Destroy();
 
+	GE_INLINE void* GetWindowHandle() const { return m_windowHandle; }
+
 private:
 	static LRESULT CALLBACK WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

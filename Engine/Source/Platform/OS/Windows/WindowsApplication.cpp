@@ -81,13 +81,16 @@ void CWindowsApplication::InitWindow(const WindowDescription& description)
 		height = rect.bottom - rect.top;
 	}
 
+	m_windowWidth = width;
+	m_windowHeight = height;
+
 	m_windowHandle = CreateWindowEx(
 		0,
 		L"WinAppClass",
 		L"Sandbox",
 		windowStyle,
-		width,
-		height,
+		m_windowWidth,
+		m_windowHeight,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		nullptr,

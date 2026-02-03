@@ -32,10 +32,16 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
 
 CVulkanRDI::CVulkanRDI()
 {
+	m_viewport = { };
+
 	m_instance = VK_NULL_HANDLE;
 #ifdef _DEBUG
 	m_debugCallback = VK_NULL_HANDLE;
 #endif
+	m_graphicsQueueIndex = -1;
+	m_gpu = VK_NULL_HANDLE;
+
+	m_surface = VK_NULL_HANDLE;
 }
 
 CVulkanRDI::~CVulkanRDI()
@@ -43,9 +49,11 @@ CVulkanRDI::~CVulkanRDI()
 	Destroy();
 }
 
-void CVulkanRDI::Init()
+void CVulkanRDI::Init(const Viewport& viewport)
 {
+	m_viewport = viewport;
 	InitInstance();
+	InitSurface();
 	InitDevice();
 }
 
@@ -174,9 +182,72 @@ void CVulkanRDI::DestroyInstance()
 
 }
 
+void CVulkanRDI::InitSurface()
+{
+#ifdef GE_WINDOWS_PLATFORM
+	VkWin32SurfaceCreateInfoKHR surfaceInfo = {};
+	surfaceInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	surfaceInfo.pNext = nullptr;
+	surfaceInfo.flags = 0;
+	surfaceInfo.hinstance = GetModuleHandleA(0);
+	surfaceInfo.hwnd = (HWND)m_viewport.viewportHandle;
+	if (vkCreateWin32SurfaceKHR(m_instance, &surfaceInfo, nullptr, &m_surface))
+	{
+		GE_LOG(Fatal, "Win32 surface creation failed.");
+		return;
+	}
+#endif
+}
+
 void CVulkanRDI::InitDevice()
 {
+	GE_LOG(Log, "Initializing Vulkan device.")
 
+	U32 gpuCount = 0;
+	vkEnumeratePhysicalDevices(m_instance, &gpuCount, nullptr);
+	if (gpuCount < 1)
+	{
+		GE_LOG(Fatal, "No physical device found.");
+		return;
+	}
+
+	std::vector<VkPhysicalDevice> gpus(gpuCount);
+	vkEnumeratePhysicalDevices(m_instance, &gpuCount, gpus.data());
+
+	for (U32 i = 0; i < gpuCount && (m_graphicsQueueIndex < 0); i++)
+	{
+		m_gpu = gpus[i];
+
+		U32 queueFamilyCount;
+		vkGetPhysicalDeviceQueueFamilyProperties(m_gpu, &queueFamilyCount, nullptr);
+
+		if (queueFamilyCount < 1)
+		{
+			GE_LOG(Fatal, "No queue family found.");
+			return;
+		}
+
+		std::vector<VkQueueFamilyProperties> queueFamilyProperties(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(m_gpu, &queueFamilyCount, queueFamilyProperties.data());
+
+		for (U32 i = 0; i < queueFamilyCount; i++)
+		{
+			VkBool32 supportsPresent;
+			vkGetPhysicalDeviceSurfaceSupportKHR(m_gpu, i, m_surface, &supportsPresent);
+
+			if ((queueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) && supportsPresent)
+			{
+				m_graphicsQueueIndex = i;
+				break;
+			}
+		}
+	}
+
+	if (m_graphicsQueueIndex < 0)
+	{
+		GE_LOG(Fatal, "Did not find suitable device with a queue that supports graphics and presentation.");
+		return;
+	}
 }
 
 void CVulkanRDI::DestroyDevice()

@@ -43,4 +43,14 @@ public:
 	virtual void HandleMessages() {}
 
 	virtual void Destroy() {}
+
+	GE_INLINE virtual void* GetWindowHandle() const { return nullptr; }
+
+	GE_INLINE U32 GetWindowWidth() const { return m_windowWidth; }
+
+	GE_INLINE U32 GetWindowHeight() const { return m_windowHeight; }
+
+protected:
+	U32 m_windowWidth;
+	U32 m_windowHeight;
 };
