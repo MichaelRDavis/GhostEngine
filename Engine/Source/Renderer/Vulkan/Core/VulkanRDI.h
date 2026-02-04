@@ -33,6 +33,7 @@ private:
 #endif
 	I32 m_graphicsQueueIndex;
 	VkPhysicalDevice m_gpu;
+	VkDevice m_device;
 
 	VkSurfaceKHR m_surface;
 };

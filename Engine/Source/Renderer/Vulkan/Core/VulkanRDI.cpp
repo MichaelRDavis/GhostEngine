@@ -40,6 +40,7 @@ CVulkanRDI::CVulkanRDI()
 #endif
 	m_graphicsQueueIndex = -1;
 	m_gpu = VK_NULL_HANDLE;
+	m_device = VK_NULL_HANDLE;
 
 	m_surface = VK_NULL_HANDLE;
 }
@@ -112,7 +113,7 @@ void CVulkanRDI::InitInstance()
 	#error "Platform not supported!"
 #endif
 
-	// TODO: Validate extensions
+	// TODO: Validate instance extensions
 
 	std::vector<const char*> requestedInstanceLayers;
 #ifdef _DEBUG
@@ -248,6 +249,39 @@ void CVulkanRDI::InitDevice()
 		GE_LOG(Fatal, "Did not find suitable device with a queue that supports graphics and presentation.");
 		return;
 	}
+
+	U32 deviceExtensionCount;
+	vkEnumerateDeviceExtensionProperties(m_gpu, nullptr, &deviceExtensionCount, nullptr);
+	std::vector<VkExtensionProperties> deviceExtensions(deviceExtensionCount);
+	vkEnumerateDeviceExtensionProperties(m_gpu, nullptr, &deviceExtensionCount, deviceExtensions.data());
+
+	std::vector<const char*> requiredDeviceExtensions;
+	requiredDeviceExtensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+	// TODO: Validate device extensions 
+
+	const float queuePriority = 0.5f;
+
+	VkDeviceQueueCreateInfo queueInfo = {};
+	queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	queueInfo.queueFamilyIndex = m_graphicsQueueIndex;
+	queueInfo.queueCount = 1;
+	queueInfo.pQueuePriorities = &queuePriority;
+
+	VkDeviceCreateInfo deviceInfo = {};
+	deviceInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	deviceInfo.queueCreateInfoCount = 1;
+	deviceInfo.pQueueCreateInfos = &queueInfo;
+	deviceInfo.enabledExtensionCount = (U32)requiredDeviceExtensions.size();
+	deviceInfo.ppEnabledExtensionNames = requiredDeviceExtensions.data();
+
+	if (vkCreateDevice(m_gpu, &deviceInfo, nullptr, &m_device))
+	{
+		GE_LOG(Fatal, "Failed to create Vulkan device.");
+		return;
+	}
+
+	volkLoadDevice(m_device);
 }
 
 void CVulkanRDI::DestroyDevice()
