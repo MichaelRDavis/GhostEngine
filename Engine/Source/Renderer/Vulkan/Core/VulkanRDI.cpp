@@ -57,6 +57,7 @@ void CVulkanRDI::Init(const Viewport& viewport)
 	InitInstance();
 	InitSurface();
 	InitDevice();
+	InitVertexBuffer();
 }
 
 void CVulkanRDI::Render()
@@ -304,4 +305,36 @@ void CVulkanRDI::InitDevice()
 void CVulkanRDI::DestroyDevice()
 {
 
+}
+
+void CVulkanRDI::InitVertexBuffer()
+{
+	const std::vector<Vertex> vertices = {
+	{{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}} };
+
+	const VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+
+	VkBufferCreateInfo bufferInfo = {};
+	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferInfo.size = bufferSize;
+	bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+	VmaAllocationCreateInfo bufferAllocCreateInfo = {};
+	bufferAllocCreateInfo.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
+	bufferAllocCreateInfo.usage = VMA_MEMORY_USAGE_AUTO;
+	bufferAllocCreateInfo.requiredFlags = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+	VmaAllocationInfo bufferAllocInfo = {};
+	vmaCreateBuffer(m_vmaAllocator, &bufferInfo, &bufferAllocCreateInfo, &m_vertexBuffer, &m_vertexBufferAllocation, &bufferAllocInfo);
+	if (bufferAllocInfo.pMappedData)
+	{
+		CMemory::Memcpy(bufferAllocInfo.pMappedData, vertices.data(), bufferSize);
+	}
+	else
+	{
+		GE_LOG(Fatal, "Could not map vertex buffer.");
+		return;
+	}
 }

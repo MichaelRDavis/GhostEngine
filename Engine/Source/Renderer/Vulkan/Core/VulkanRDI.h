@@ -2,6 +2,13 @@
 
 #include "Renderer/RDI.h"
 #include "Renderer/Vulkan/VulkanIncludes.h"
+#include "Core/Core.h"
+
+struct Vertex
+{
+	Vec3 position;
+	Vec3 color;
+};
 
 class CVulkanRDI : public IRDI
 {
@@ -24,6 +31,8 @@ private:
 	void InitDevice();
 	void DestroyDevice();
 
+	void InitVertexBuffer();
+
 private:
 	Viewport m_viewport;
 
@@ -38,4 +47,6 @@ private:
 	VkSurfaceKHR m_surface;
 
 	VmaAllocator m_vmaAllocator;
+	VmaAllocation m_vertexBufferAllocation;
+	VkBuffer m_vertexBuffer;
 };
