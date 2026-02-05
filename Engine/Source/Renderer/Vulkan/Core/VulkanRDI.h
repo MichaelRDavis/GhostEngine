@@ -36,4 +36,6 @@ private:
 	VkDevice m_device;
 
 	VkSurfaceKHR m_surface;
+
+	VmaAllocator m_vmaAllocator;
 };

@@ -1,6 +1,7 @@
 #include "VulkanRDI.h"
 #include "Engine/Engine.h"
 #include "Core/Logging/Log.h"
+#define VMA_IMPLEMENTATION
 
 #ifdef _DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -282,6 +283,22 @@ void CVulkanRDI::InitDevice()
 	}
 
 	volkLoadDevice(m_device);
+
+	VmaVulkanFunctions vmaVulkanFunc = {};
+	vmaVulkanFunc.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
+	vmaVulkanFunc.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+
+	VmaAllocatorCreateInfo allocatorInfo = {};
+	allocatorInfo.physicalDevice = m_gpu;
+	allocatorInfo.device = m_device;
+	allocatorInfo.pVulkanFunctions = &vmaVulkanFunc;
+	allocatorInfo.instance = m_instance;
+
+	if (vmaCreateAllocator(&allocatorInfo, &m_vmaAllocator))
+	{
+		GE_LOG(Fatal, "Could not create allocator for VMA allocator.");
+		return;
+	}
 }
 
 void CVulkanRDI::DestroyDevice()
