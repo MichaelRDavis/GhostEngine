@@ -58,6 +58,7 @@ void CVulkanRDI::Init(const Viewport& viewport)
 	InitSurface();
 	InitDevice();
 	InitVertexBuffer();
+	InitSwapchain();
 }
 
 void CVulkanRDI::Render()
@@ -337,4 +338,149 @@ void CVulkanRDI::InitVertexBuffer()
 		GE_LOG(Fatal, "Could not map vertex buffer.");
 		return;
 	}
+}
+
+void CVulkanRDI::InitSwapchain()
+{
+	VkSurfaceCapabilitiesKHR surfaceProperties;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_gpu, m_surface, &surfaceProperties);
+
+	VkSurfaceFormatKHR format = SelectSurfaceFormat(m_gpu, m_surface);
+
+	VkExtent2D swapchainSize = {};
+	if (surfaceProperties.minImageExtent.width == 0xFFFFFFFF)
+	{
+		swapchainSize.width = m_viewport.width;
+		swapchainSize.height = m_viewport.height;
+	}
+	else
+	{
+		swapchainSize = surfaceProperties.currentExtent;
+	}
+
+	VkPresentModeKHR swapchainPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+
+	U32 desiredSwapchainImages = surfaceProperties.minImageCount + 1;
+	if ((surfaceProperties.maxImageCount > 0) && (desiredSwapchainImages > surfaceProperties.maxImageCount))
+	{
+		desiredSwapchainImages = surfaceProperties.maxImageCount;
+	}
+
+	VkSurfaceTransformFlagBitsKHR preTransform;
+	if (surfaceProperties.supportedTransforms & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR)
+	{
+		preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+	}
+	else
+	{
+		preTransform = surfaceProperties.currentTransform;
+	}
+
+	VkSwapchainKHR oldSwapchain = m_swapchain;
+
+	VkCompositeAlphaFlagBitsKHR composite = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	if (surfaceProperties.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR)
+	{
+		composite = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+	}
+	else if (surfaceProperties.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR)
+	{
+		composite = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR;
+	}
+	else if (surfaceProperties.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR)
+	{
+		composite = VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR;
+	}
+	else if (surfaceProperties.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR)
+	{
+		composite = VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR;
+	}
+
+	VkSwapchainCreateInfoKHR info = {};
+	info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	info.surface = m_surface;
+	info.minImageCount = desiredSwapchainImages;
+	info.imageFormat = format.format;
+	info.imageColorSpace = format.colorSpace;
+	info.imageExtent = swapchainSize;
+	info.imageArrayLayers = 1;
+	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	info.preTransform = preTransform;
+	info.compositeAlpha = composite;
+	info.presentMode = swapchainPresentMode;
+	info.clipped = true;
+	info.oldSwapchain = oldSwapchain;
+
+	if (vkCreateSwapchainKHR(m_device, &info, nullptr, &m_swapchain))
+	{
+		GE_LOG(Fatal, "Failed to create Vulkan swapchain.");
+		return;
+	}
+
+	if (oldSwapchain != VK_NULL_HANDLE)
+	{
+		for (VkImageView imageView : m_swapchainImageViews)
+		{
+			vkDestroyImageView(m_device, imageView, nullptr);
+		}
+
+		for (auto& perFrame : m_perFrame)
+		{
+			// TODO: Tear down frame
+		}
+
+		m_swapchainImageViews.clear();
+
+		vkDestroySwapchainKHR(m_device, oldSwapchain, nullptr);
+	}
+
+	m_swapchainDimensions = { swapchainSize.width, swapchainSize.height, format.format };
+
+	U32 imageCount;
+	vkGetSwapchainImagesKHR(m_device, m_swapchain, &imageCount, nullptr);
+	std::vector<VkImage> swapchainImages(imageCount);
+	vkGetSwapchainImagesKHR(m_device, m_swapchain, &imageCount, swapchainImages.data());
+
+	m_perFrame.clear();
+	m_perFrame.resize(imageCount);
+
+	for (U32 i = 0; i < imageCount; i++)
+	{
+		// TODO: Init per frame
+	}
+
+	for (U32 i = 0; i < imageCount; i++)
+	{
+		VkImageViewCreateInfo viewInfo = {};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = swapchainImages[i];
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = m_swapchainDimensions.format;
+		viewInfo.subresourceRange = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .baseMipLevel = 0, .levelCount = 1, .baseArrayLayer = 0, .layerCount = 1 };
+
+		VkImageView imageView;
+		vkCreateImageView(m_device, &viewInfo, nullptr, &imageView);
+
+		m_swapchainImageViews.push_back(imageView);
+	}
+}
+
+VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(
+	VkPhysicalDevice gpu, 
+	VkSurfaceKHR surface, 
+	std::vector<VkFormat> const& preferredFormats)
+{
+	U32 surfaceFormatCount;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(gpu, surface, &surfaceFormatCount, nullptr);
+	std::vector<VkSurfaceFormatKHR> supportedSurfaceFormats(surfaceFormatCount);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(gpu, surface, &surfaceFormatCount, supportedSurfaceFormats.data());
+
+	auto it = std::ranges::find_if(supportedSurfaceFormats,
+		[&preferredFormats](VkSurfaceFormatKHR surface_format) {
+			return std::ranges::any_of(preferredFormats,
+				[&surface_format](VkFormat format) { return format == surface_format.format; });
+		});
+
+	return it != supportedSurfaceFormats.end() ? *it : supportedSurfaceFormats[0];
 }

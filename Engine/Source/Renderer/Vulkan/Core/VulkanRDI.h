@@ -10,6 +10,22 @@ struct Vertex
 	Vec3 color;
 };
 
+struct PerFrame
+{
+	VkFence queueSubmitFence = VK_NULL_HANDLE;
+	VkCommandPool primaryCommandPool = VK_NULL_HANDLE;
+	VkCommandBuffer primaryCommandBuffer = VK_NULL_HANDLE;
+	VkSemaphore swapchainAcquireSemaphore = VK_NULL_HANDLE;
+	VkSemaphore swapchainReleaseSemaphore = VK_NULL_HANDLE;
+};
+
+struct SwapchainDimensions
+{
+	U32 width = 0;
+	U32 height = 0;
+	VkFormat format = VK_FORMAT_UNDEFINED;
+};
+
 class CVulkanRDI : public IRDI
 {
 public:
@@ -33,6 +49,16 @@ private:
 
 	void InitVertexBuffer();
 
+	void InitSwapchain();
+
+	VkSurfaceFormatKHR SelectSurfaceFormat(
+		VkPhysicalDevice gpu, 
+		VkSurfaceKHR surface, 
+		std::vector<VkFormat> const& preferredFormats = {
+		VK_FORMAT_R8G8B8A8_SRGB, 
+		VK_FORMAT_B8G8R8A8_SRGB, 
+		VK_FORMAT_A8B8G8R8_SRGB_PACK32 });
+
 private:
 	Viewport m_viewport;
 
@@ -49,4 +75,9 @@ private:
 	VmaAllocator m_vmaAllocator;
 	VmaAllocation m_vertexBufferAllocation;
 	VkBuffer m_vertexBuffer;
+
+	VkSwapchainKHR m_swapchain;
+	std::vector<VkImageView> m_swapchainImageViews;
+	std::vector<PerFrame> m_perFrame;
+	SwapchainDimensions m_swapchainDimensions;
 };
