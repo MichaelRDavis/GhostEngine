@@ -20,7 +20,7 @@ void CEngine::Init(const Viewport& viewport)
 
 void CEngine::Update(F32 deltaTime)
 {
-	m_renderer->Render();
+	m_renderer->Render(deltaTime);
 }
 
 void CEngine::Destroy()

@@ -34,9 +34,11 @@ public:
 
 	void Init(const Viewport& viewport);
 
-	void Render();
+	void Render(F32 deltaTime);
 
 	void Destroy();
+
+	void DrawTriangle(U32 index);
 
 private:
 	void InitInstance();
@@ -50,6 +52,8 @@ private:
 	void InitVertexBuffer();
 
 	void InitSwapchain();
+
+	void InitRenderPass();
 
 	VkSurfaceFormatKHR SelectSurfaceFormat(
 		VkPhysicalDevice gpu, 
@@ -80,4 +84,6 @@ private:
 	std::vector<VkImageView> m_swapchainImageViews;
 	std::vector<PerFrame> m_perFrame;
 	SwapchainDimensions m_swapchainDimensions;
+
+	VkRenderPass m_renderPass;
 };

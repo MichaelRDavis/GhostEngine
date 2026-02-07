@@ -59,17 +59,23 @@ void CVulkanRDI::Init(const Viewport& viewport)
 	InitDevice();
 	InitVertexBuffer();
 	InitSwapchain();
+	InitRenderPass();
 }
 
-void CVulkanRDI::Render()
+void CVulkanRDI::Render(F32 deltaTime)
 {
-
+	DrawTriangle(0);
 }
 
 void CVulkanRDI::Destroy()
 {
 	DestroyInstance();
 	DestroyDevice();
+}
+
+void CVulkanRDI::DrawTriangle(U32 index)
+{
+
 }
 
 void CVulkanRDI::InitInstance()
@@ -464,6 +470,46 @@ void CVulkanRDI::InitSwapchain()
 
 		m_swapchainImageViews.push_back(imageView);
 	}
+}
+
+void CVulkanRDI::InitRenderPass()
+{
+	VkAttachmentDescription attachment = {};
+	attachment.format = m_swapchainDimensions.format;
+	attachment.samples = VK_SAMPLE_COUNT_1_BIT;
+	attachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+	attachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+	attachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+	attachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+	attachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	attachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+	VkAttachmentReference colorRef = { 0, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL };
+
+	VkSubpassDescription subpass = {};
+	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	subpass.colorAttachmentCount = 1;
+	subpass.pColorAttachments = &colorRef;
+
+	VkSubpassDependency dependency = {};
+	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	dependency.dstSubpass = 0;
+	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+	dependency.srcAccessMask = 0;
+	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+	VkRenderPassCreateInfo rpInfo = {};
+	rpInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	rpInfo.attachmentCount = 1;
+	rpInfo.pAttachments = &attachment;
+	rpInfo.subpassCount = 1;
+	rpInfo.pSubpasses = &subpass;
+	rpInfo.dependencyCount = 1;
+	rpInfo.pDependencies = &dependency;
+
+	vkCreateRenderPass(m_device, &rpInfo, nullptr, &m_renderPass);
 }
 
 VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(

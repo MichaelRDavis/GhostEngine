@@ -17,7 +17,7 @@ public:
 
 	virtual void Init(const Viewport& viewport) {}
 
-	virtual void Render() {}
+	virtual void Render(F32 deltaTime) {}
 
 	virtual void Destroy() {}
 };
