@@ -17,4 +17,6 @@ public:
 	static void Sleep(U32 ms);
 
 	static PlatformInfo GetPlatformInfo();
+
+	static std::vector<char> ReadFile(const char* path);
 };

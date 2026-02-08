@@ -60,6 +60,7 @@ void CVulkanRDI::Init(const Viewport& viewport)
 	InitVertexBuffer();
 	InitSwapchain();
 	InitRenderPass();
+	InitPipeline();
 }
 
 void CVulkanRDI::Render(F32 deltaTime)
@@ -510,6 +511,83 @@ void CVulkanRDI::InitRenderPass()
 	rpInfo.pDependencies = &dependency;
 
 	vkCreateRenderPass(m_device, &rpInfo, nullptr, &m_renderPass);
+}
+
+void CVulkanRDI::InitPipeline()
+{
+	VkPipelineLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	vkCreatePipelineLayout(m_device, &layoutInfo, nullptr, &m_pipelineLayout);
+
+	VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
+	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+
+	VkVertexInputBindingDescription bindingDescription = {};
+	bindingDescription.binding = 0;
+	bindingDescription.stride = sizeof(Vertex);
+	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+	std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{
+		{{.location = 0, .binding = 0, .format = VK_FORMAT_R32G32_SFLOAT, .offset = offsetof(Vertex, position)},
+		 {.location = 1, .binding = 0, .format = VK_FORMAT_R32G32B32_SFLOAT, .offset = offsetof(Vertex, color)}} };
+
+	VkPipelineVertexInputStateCreateInfo vertexInput = {};
+	vertexInput.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	vertexInput.vertexBindingDescriptionCount = 1;
+	vertexInput.pVertexBindingDescriptions = &bindingDescription;
+	vertexInput.vertexAttributeDescriptionCount = (U32)attributeDescriptions.size();
+	vertexInput.pVertexAttributeDescriptions = attributeDescriptions.data();
+
+	VkPipelineRasterizationStateCreateInfo raster = {};
+	raster.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	raster.cullMode = VK_CULL_MODE_BACK_BIT;
+	raster.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	raster.lineWidth = 1.0f;
+
+	VkPipelineColorBlendAttachmentState blendAttachment = {};
+	blendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+
+	VkPipelineColorBlendStateCreateInfo blend = {};
+	blend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	blend.attachmentCount = 1;
+	blend.pAttachments = &blendAttachment;
+
+	VkPipelineViewportStateCreateInfo viewport = {};
+	viewport.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	viewport.viewportCount = 1;
+	viewport.scissorCount = 1;
+
+	VkPipelineDepthStencilStateCreateInfo depthStencil = {};
+	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+
+	VkPipelineMultisampleStateCreateInfo multisample = {};
+	multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	multisample.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+
+	std::array<VkDynamicState, 2> dynamics{ VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+
+	VkPipelineDynamicStateCreateInfo dynamic = {};
+	dynamic.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	dynamic.dynamicStateCount = (U32)dynamics.size();
+	dynamic.pDynamicStates = dynamics.data();
+
+	std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
+
+	VkGraphicsPipelineCreateInfo pipe = {};
+	pipe.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	pipe.pVertexInputState = &vertexInput;
+	pipe.pInputAssemblyState = &inputAssembly;
+	pipe.pViewportState = &viewport;
+	pipe.pRasterizationState = &raster;
+	pipe.pMultisampleState = &multisample;
+	pipe.pDepthStencilState = &depthStencil;
+	pipe.pColorBlendState = &blend;
+	pipe.pDynamicState = &dynamic;
+	pipe.layout = m_pipelineLayout;
+	pipe.renderPass = m_renderPass;
+
+	vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipe, nullptr, &m_pipeline);
 }
 
 VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(

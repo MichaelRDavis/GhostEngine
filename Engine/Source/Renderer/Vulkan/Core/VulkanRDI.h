@@ -55,6 +55,8 @@ private:
 
 	void InitRenderPass();
 
+	void InitPipeline();
+
 	VkSurfaceFormatKHR SelectSurfaceFormat(
 		VkPhysicalDevice gpu, 
 		VkSurfaceKHR surface, 
@@ -86,4 +88,7 @@ private:
 	SwapchainDimensions m_swapchainDimensions;
 
 	VkRenderPass m_renderPass;
+
+	VkPipelineLayout m_pipelineLayout;
+	VkPipeline m_pipeline;
 };
