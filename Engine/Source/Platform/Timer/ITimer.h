@@ -2,7 +2,7 @@
 
 #include "Platform/Platform.h"
 
-class CTimer
+class ITimer
 {
 public:
 	static void StartTimer();
@@ -11,7 +11,5 @@ public:
 
 private:
 	static F64 m_clockFrequency;
-#ifdef GE_WINDOWS_PLATFORM
-	static LARGE_INTEGER m_startTime;
-#endif
+	static U64 m_startTime;
 };

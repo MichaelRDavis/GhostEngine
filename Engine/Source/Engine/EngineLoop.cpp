@@ -1,5 +1,5 @@
 #include "EngineLoop.h"
-#include "Platform/Timer/Timer.h"
+#include "Platform/Timer/ITimer.h"
 #include "Platform/OS/Interface/IPlatform.h"
 #include "Core/Core.h"
 #include "Engine/Engine.h"
@@ -28,8 +28,9 @@ void CEngineLoop::Init()
 {
 	PlatformInfo info = IPlatform::GetPlatformInfo();
 
+	ITimer::StartTimer();
+
 	CLog::Init();
-	CTimer::StartTimer();
 	CMemoryTracker::Init();
 
 	GE_LOG(Log, "CPU Clock Speed: %d MHz", info.cpuClockSpeed);
