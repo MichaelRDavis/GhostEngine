@@ -101,6 +101,7 @@ void CVulkanRDI::InitInstance()
 	vkEnumerateInstanceExtensionProperties(nullptr, &instanceExtensionCount, availableInstanceExtensions.data());
 
 #ifdef _DEBUG
+	// Validation layers help detect errors in Vulkan API usage, only enabled in debug builds.
 	bool hasDebugUtils = false;
 	for (const auto& extension : availableInstanceExtensions)
 	{
@@ -126,7 +127,10 @@ void CVulkanRDI::InitInstance()
 	#error "Platform not supported!"
 #endif
 
-	// TODO: Validate instance extensions
+	if (!ValidateExtensions(requiredInstanceExtensions, availableInstanceExtensions))
+	{
+		GE_LOG(Error, "Required instance extensions are missing.");
+	}
 
 	std::vector<const char*> requestedInstanceLayers;
 #ifdef _DEBUG
@@ -193,7 +197,7 @@ void CVulkanRDI::InitInstance()
 
 void CVulkanRDI::DestroyInstance()
 {
-
+	
 }
 
 void CVulkanRDI::InitSurface()
@@ -271,7 +275,11 @@ void CVulkanRDI::InitDevice()
 	std::vector<const char*> requiredDeviceExtensions;
 	requiredDeviceExtensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-	// TODO: Validate device extensions 
+	if (!ValidateExtensions(requiredDeviceExtensions, deviceExtensions))
+	{
+		GE_LOG(Error, "Required device extensions are missing.");
+		return;
+	}
 
 	const float queuePriority = 0.5f;
 
@@ -630,6 +638,29 @@ void CVulkanRDI::InitFramebuffers()
 	}
 }
 
+bool CVulkanRDI::ValidateExtensions(const std::vector<const char*>& required, const std::vector<VkExtensionProperties>& available)
+{
+	for (auto extension : required)
+	{
+		bool found = false;
+		for (auto& availableExtension : available)
+		{
+			if (strcmp(availableExtension.extensionName, extension) == 0)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (!found)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(
 	VkPhysicalDevice gpu, 
 	VkSurfaceKHR surface, 
@@ -666,5 +697,17 @@ VkShaderModule CVulkanRDI::LoadShaderModule(const char* path)
 
 VkResult CVulkanRDI::AcquireNextImage(U32* image)
 {
+	VkSemaphore acquireSemaphore;
+	if (m_recycledSemaphores.empty())
+	{
+		VkSemaphoreCreateInfo info = {};
+		info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		vkCreateSemaphore(m_device, &info, nullptr, &acquireSemaphore);
+	}
+	else
+	{
+
+	}
+
 	return VK_SUCCESS;
 }

@@ -59,6 +59,8 @@ private:
 
 	void InitFramebuffers();
 
+	bool ValidateExtensions(const std::vector<const char*>& required, const std::vector<VkExtensionProperties>& available);
+
 	VkSurfaceFormatKHR SelectSurfaceFormat(
 		VkPhysicalDevice gpu, 
 		VkSurfaceKHR surface, 
@@ -99,4 +101,6 @@ private:
 	VkPipeline m_pipeline;
 
 	std::vector<VkFramebuffer> m_swapchainFramebuffers;
+
+	std::vector<VkSemaphore> m_recycledSemaphores;
 };
