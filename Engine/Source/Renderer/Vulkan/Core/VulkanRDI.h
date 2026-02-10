@@ -65,6 +65,8 @@ private:
 		VK_FORMAT_B8G8R8A8_SRGB, 
 		VK_FORMAT_A8B8G8R8_SRGB_PACK32 });
 
+	VkShaderModule LoadShaderModule(const char* path);
+
 private:
 	Viewport m_viewport;
 

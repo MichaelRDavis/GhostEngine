@@ -9,3 +9,13 @@ CVulkanSwapchain::~CVulkanSwapchain()
 {
 	
 }
+
+void CVulkanSwapchain::Init()
+{
+
+}
+
+void CVulkanSwapchain::Destroy()
+{
+
+}

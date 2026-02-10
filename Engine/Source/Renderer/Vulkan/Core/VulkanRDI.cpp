@@ -1,7 +1,7 @@
 #include "VulkanRDI.h"
 #include "Engine/Engine.h"
 #include "Core/Logging/Log.h"
-#define VMA_IMPLEMENTATION
+#include "Platform/OS/Interface/IPlatform.h"
 
 #ifdef _DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -574,8 +574,20 @@ void CVulkanRDI::InitPipeline()
 
 	std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
 
+	shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+	shaderStages[0].module = LoadShaderModule("Shaders/glsl/triangle.vert.spv");
+	shaderStages[0].pName = "main";
+
+	shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+	shaderStages[1].module = LoadShaderModule("Shaders/glsl/triangle.frag.spv");
+	shaderStages[1].pName = "main";
+
 	VkGraphicsPipelineCreateInfo pipe = {};
 	pipe.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	pipe.stageCount = (U32)shaderStages.size();
+	pipe.pStages = shaderStages.data();
 	pipe.pVertexInputState = &vertexInput;
 	pipe.pInputAssemblyState = &inputAssembly;
 	pipe.pViewportState = &viewport;
@@ -607,4 +619,19 @@ VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(
 		});
 
 	return it != supportedSurfaceFormats.end() ? *it : supportedSurfaceFormats[0];
+}
+
+VkShaderModule CVulkanRDI::LoadShaderModule(const char* path)
+{
+	auto spriv = IPlatform::ReadFile(path);
+
+	VkShaderModuleCreateInfo moduleInfo = {};
+	moduleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+	moduleInfo.codeSize = spriv.size() * sizeof(U32);
+	moduleInfo.pCode = (U32*)spriv.data();
+
+	VkShaderModule shaderModule;
+	vkCreateShaderModule(m_device, &moduleInfo, nullptr, &shaderModule);
+
+	return shaderModule;
 }
