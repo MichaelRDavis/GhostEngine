@@ -2,6 +2,8 @@
 
 #include "Platform/Platform.h"
 
+class IFileStream;
+
 enum ELogVerbosity
 {
 	Fatal,
@@ -39,9 +41,7 @@ private:
 	static void LogCrash(const char* msg);
 
 private:
-#ifdef GE_WINDOWS_PLATFORM
-	static HANDLE m_logFile;
-#endif
+	static std::unique_ptr<IFileStream> m_logFile;
 	static std::vector<LogEntry> m_logEntries;
 };
 

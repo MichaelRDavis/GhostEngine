@@ -1,9 +1,9 @@
 #include "Log.h"
 #include "Platform/Platform.h"
+#include "Platform/OS/Interface/IPlatform.h"
+#include "Platform/FileSystem/IFileStream.h"
 
-#ifdef GE_WINDOWS_PLATFORM
-HANDLE CLog::m_logFile = INVALID_HANDLE_VALUE;
-#endif
+std::unique_ptr<IFileStream> CLog::m_logFile;
 std::vector<LogEntry> CLog::m_logEntries;
 
 static const char* verbosityStrings[7] =
@@ -19,21 +19,8 @@ static const char* verbosityStrings[7] =
 
 void CLog::Init()
 {
-#ifdef GE_WINDOWS_PLATFORM
-	m_logFile = CreateFile(
-		L"Log.txt",
-		GENERIC_WRITE,
-		0,
-		nullptr,
-		CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL,
-		nullptr);
-	if (m_logFile == INVALID_HANDLE_VALUE)
-	{
-		MessageBoxA(nullptr, "Unable to create 'Log.txt' file", "Error", MB_ICONERROR | MB_OKCANCEL);
-		return;
-	}
-#endif
+	m_logFile = std::make_unique<IFileStream>();
+	m_logFile->Open("Log.txt", Write, Overwrite);
 }
 
 void CLog::Destroy()
@@ -124,27 +111,14 @@ void CLog::LogToConsole(const char* msg, U8 color, bool isError)
 
 void CLog::LogToFile(const char* msg)
 {
-#ifdef GE_WINDOWS_PLATFORM
-	DWORD bytesToWrite = (DWORD)strlen(msg);
-	DWORD bytesWritten = 0;
-
-	if (!WriteFile(
-		m_logFile,
-		msg,
-		bytesToWrite,
-		&bytesWritten,
-		nullptr))
-	{
-		MessageBoxA(nullptr, "Unable to write to 'Log.txt' file", "Error", MB_ICONERROR | MB_OKCANCEL);
-		return;
-	}
-#endif
+	m_logFile->Write(msg);
 }
 
 void CLog::LogCrash(const char* msg)
 {
 #ifdef GE_WINDOWS_PLATFORM
 	MessageBoxA(nullptr, msg, "Error", MB_ICONERROR | MB_OKCANCEL);
-	ExitProcess(0);
 #endif
+
+	IPlatform::Exit();
 }

@@ -16,7 +16,7 @@ class IPlatform
 public:
 	static void Sleep(U32 ms);
 
-	static PlatformInfo GetPlatformInfo();
+	static void Exit();
 
-	static std::vector<char> ReadFile(const char* path);
+	static PlatformInfo GetPlatformInfo();
 };

@@ -1,7 +1,7 @@
 #include "VulkanRDI.h"
 #include "Engine/Engine.h"
 #include "Core/Logging/Log.h"
-#include "Platform/OS/Interface/IPlatform.h"
+#include "Platform/FileSystem/IFileSystem.h"
 
 #ifdef _DEBUG
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -651,7 +651,7 @@ VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(
 
 VkShaderModule CVulkanRDI::LoadShaderModule(const char* path)
 {
-	auto spriv = IPlatform::ReadFile(path);
+	auto spriv = IFileSystem::ReadFile(path);
 
 	VkShaderModuleCreateInfo moduleInfo = {};
 	moduleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
