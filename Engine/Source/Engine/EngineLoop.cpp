@@ -66,9 +66,9 @@ void CEngineLoop::Run()
 
 	while (m_isRunning)
 	{
-		m_application->HandleMessages();
-
 		gEngine->Update(0.0f);
+
+		m_application->HandleMessages();
 	}
 }
 

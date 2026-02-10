@@ -44,6 +44,7 @@ CVulkanRDI::CVulkanRDI()
 	m_graphicsQueueIndex = -1;
 	m_gpu = VK_NULL_HANDLE;
 	m_device = VK_NULL_HANDLE;
+	m_queue = VK_NULL_HANDLE;
 	m_vmaAllocator = VK_NULL_HANDLE;
 	m_vertexBufferAllocation = VK_NULL_HANDLE;
 	m_vertexBuffer = VK_NULL_HANDLE;
@@ -77,7 +78,22 @@ void CVulkanRDI::Init(const Viewport& viewport)
 
 void CVulkanRDI::Render(F32 deltaTime)
 {
-	
+	U32 index;
+
+	auto res = AcquireNextImage(&index);
+	if (res == VK_SUBOPTIMAL_KHR || res == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		res = AcquireNextImage(&index);
+	}
+
+	if (res != VK_SUCCESS)
+	{
+		vkQueueWaitIdle(m_queue);
+		return;
+	}
+
+	DrawTriangle(index);
+	res = PresentImage(index);
 }
 
 void CVulkanRDI::Destroy()
@@ -87,7 +103,70 @@ void CVulkanRDI::Destroy()
 
 void CVulkanRDI::DrawTriangle(U32 index)
 {
-	
+	VkFramebuffer framebuffer = m_swapchainFramebuffers[index];
+
+	VkCommandBuffer cmd = m_perFrame[index].primaryCommandBuffer;
+
+	VkCommandBufferBeginInfo beginInfo = {};
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+	vkBeginCommandBuffer(cmd, &beginInfo);
+
+	VkClearValue clearValue { .color = {{0.01f, 0.01f, 0.033f, 1.0f}} };
+
+	VkRenderPassBeginInfo rpBegin = {};
+	rpBegin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	rpBegin.renderPass = m_renderPass;
+	rpBegin.framebuffer = framebuffer;
+	rpBegin.renderArea = { .extent = {.width = m_swapchainDimensions.width, .height = m_swapchainDimensions.height} };
+	rpBegin.clearValueCount = 1;
+	rpBegin.pClearValues = &clearValue;
+
+	vkCmdBeginRenderPass(cmd, &rpBegin, VK_SUBPASS_CONTENTS_INLINE);
+
+	vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
+
+	VkViewport vp{
+	.width = (F32)(m_swapchainDimensions.width),
+	.height = (F32)(m_swapchainDimensions.height),
+	.minDepth = 0.0f,
+	.maxDepth = 1.0f };
+	vkCmdSetViewport(cmd, 0, 1, &vp);
+
+	VkRect2D scissor{
+	.extent = {.width = m_swapchainDimensions.width, .height = m_swapchainDimensions.height} };
+	vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+	VkDeviceSize offset = { 0 };
+	vkCmdBindVertexBuffers(cmd, 0, 1, &m_vertexBuffer, &offset);
+
+	vkCmdDraw(cmd, 3, 1, 0, 0);
+
+	vkCmdEndRenderPass(cmd);
+
+	vkEndCommandBuffer(cmd);
+
+	if (m_perFrame[index].swapchainReleaseSemaphore == VK_NULL_HANDLE)
+	{
+		VkSemaphoreCreateInfo semaphoreInfo = {};
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		vkCreateSemaphore(m_device, &semaphoreInfo, nullptr, &m_perFrame[index].swapchainReleaseSemaphore);
+	}
+
+	VkPipelineStageFlags waitStage{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+	VkSubmitInfo info = {};
+	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	info.waitSemaphoreCount = 1;
+	info.pWaitSemaphores = &m_perFrame[index].swapchainAcquireSemaphore;
+	info.pWaitDstStageMask = &waitStage;
+	info.commandBufferCount = 1;
+	info.pCommandBuffers = &cmd;
+	info.signalSemaphoreCount = 1;
+	info.pSignalSemaphores = &m_perFrame[index].swapchainReleaseSemaphore;
+
+	vkQueueSubmit(m_queue, 1, &info, m_perFrame[index].queueSubmitFence);
 }
 
 void CVulkanRDI::InitInstance()
@@ -306,6 +385,8 @@ void CVulkanRDI::InitDevice()
 	}
 
 	volkLoadDevice(m_device);
+
+	vkGetDeviceQueue(m_device, m_graphicsQueueIndex, 0, &m_queue);
 
 	VmaVulkanFunctions vmaVulkanFunc = {};
 	vmaVulkanFunc.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
@@ -608,7 +689,11 @@ void CVulkanRDI::InitPipeline()
 	pipe.layout = m_pipelineLayout;
 	pipe.renderPass = m_renderPass;
 
-	vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipe, nullptr, &m_pipeline);
+	if (vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipe, nullptr, &m_pipeline) != VK_SUCCESS)
+	{
+		GE_LOG(Fatal, "Failed to create Vulkan graphics piepline.");
+		return;
+	}
 
 	vkDestroyShaderModule(m_device, shaderStages[0].module, nullptr);
 	vkDestroyShaderModule(m_device, shaderStages[1].module, nullptr);
@@ -743,7 +828,7 @@ VkShaderModule CVulkanRDI::LoadShaderModule(const char* path)
 
 	VkShaderModuleCreateInfo moduleInfo = {};
 	moduleInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	moduleInfo.codeSize = spriv.size() * sizeof(U32);
+	moduleInfo.codeSize = spriv.size();
 	moduleInfo.pCode = (U32*)spriv.data();
 
 	VkShaderModule shaderModule;
@@ -794,4 +879,17 @@ VkResult CVulkanRDI::AcquireNextImage(U32* image)
 	m_perFrame[*image].swapchainAcquireSemaphore = acquireSemaphore;
 
 	return VK_SUCCESS;
+}
+
+VkResult CVulkanRDI::PresentImage(U32 index)
+{
+	VkPresentInfoKHR present = {};
+	present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	present.waitSemaphoreCount = 1;
+	present.pWaitSemaphores = &m_perFrame[index].swapchainReleaseSemaphore;
+	present.swapchainCount = 1;
+	present.pSwapchains = &m_swapchain;
+	present.pImageIndices = &index;
+
+	return vkQueuePresentKHR(m_queue, &present);
 }

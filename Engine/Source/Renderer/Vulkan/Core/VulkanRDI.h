@@ -75,6 +75,8 @@ private:
 
 	VkResult AcquireNextImage(U32* image);
 
+	VkResult PresentImage(U32 index);
+
 private:
 	Viewport m_viewport;
 
@@ -87,6 +89,7 @@ private:
 	I32 m_graphicsQueueIndex;
 	VkPhysicalDevice m_gpu;
 	VkDevice m_device;
+	VkQueue m_queue;
 	VmaAllocator m_vmaAllocator;
 	VmaAllocation m_vertexBufferAllocation;
 	VkBuffer m_vertexBuffer;

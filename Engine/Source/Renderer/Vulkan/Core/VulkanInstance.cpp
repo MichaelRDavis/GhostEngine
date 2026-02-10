@@ -44,13 +44,13 @@ CVulkanInstance::~CVulkanInstance()
 
 void CVulkanInstance::Init()
 {
-	GE_LOG(Log, "Initializing Vulkan instance.")
+	GE_LOG(Log, "Initializing Vulkan instance.");
 
-		if (volkInitialize())
-		{
-			GE_LOG(Fatal, "Failed to initialize volk.");
-			return;
-		}
+	if (volkInitialize())
+	{
+		GE_LOG(Fatal, "Failed to initialize volk.");
+		return;
+	}
 
 	std::vector<const char*> requiredInstanceExtensions;
 	requiredInstanceExtensions.emplace_back(VK_KHR_SURFACE_EXTENSION_NAME);
