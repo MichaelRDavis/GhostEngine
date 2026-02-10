@@ -61,10 +61,13 @@ void CVulkanRDI::Init(const Viewport& viewport)
 	InitSwapchain();
 	InitRenderPass();
 	InitPipeline();
+	InitFramebuffers();
 }
 
 void CVulkanRDI::Render(F32 deltaTime)
 {
+	U32 index;
+
 	DrawTriangle(0);
 }
 
@@ -600,6 +603,31 @@ void CVulkanRDI::InitPipeline()
 	pipe.renderPass = m_renderPass;
 
 	vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &pipe, nullptr, &m_pipeline);
+
+	vkDestroyShaderModule(m_device, shaderStages[0].module, nullptr);
+	vkDestroyShaderModule(m_device, shaderStages[1].module, nullptr);
+}
+
+void CVulkanRDI::InitFramebuffers()
+{
+	m_swapchainFramebuffers.clear();
+
+	for (auto& imageView : m_swapchainImageViews)
+	{
+		VkFramebufferCreateInfo fbInfo = {};
+		fbInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		fbInfo.renderPass = m_renderPass;
+		fbInfo.attachmentCount = 1;
+		fbInfo.pAttachments = &imageView;
+		fbInfo.width = m_swapchainDimensions.width;
+		fbInfo.height = m_swapchainDimensions.height;
+		fbInfo.layers = 1;
+
+		VkFramebuffer framebuffer;
+		vkCreateFramebuffer(m_device, &fbInfo, nullptr, &framebuffer);
+
+		m_swapchainFramebuffers.emplace_back(framebuffer);
+	}
 }
 
 VkSurfaceFormatKHR CVulkanRDI::SelectSurfaceFormat(
@@ -634,4 +662,9 @@ VkShaderModule CVulkanRDI::LoadShaderModule(const char* path)
 	vkCreateShaderModule(m_device, &moduleInfo, nullptr, &shaderModule);
 
 	return shaderModule;
+}
+
+VkResult CVulkanRDI::AcquireNextImage(U32* image)
+{
+	return VK_SUCCESS;
 }

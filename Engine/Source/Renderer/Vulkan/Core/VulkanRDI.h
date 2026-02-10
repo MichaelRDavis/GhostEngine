@@ -57,6 +57,8 @@ private:
 
 	void InitPipeline();
 
+	void InitFramebuffers();
+
 	VkSurfaceFormatKHR SelectSurfaceFormat(
 		VkPhysicalDevice gpu, 
 		VkSurfaceKHR surface, 
@@ -66,6 +68,8 @@ private:
 		VK_FORMAT_A8B8G8R8_SRGB_PACK32 });
 
 	VkShaderModule LoadShaderModule(const char* path);
+
+	VkResult AcquireNextImage(U32* image);
 
 private:
 	Viewport m_viewport;
@@ -93,4 +97,6 @@ private:
 
 	VkPipelineLayout m_pipelineLayout;
 	VkPipeline m_pipeline;
+
+	std::vector<VkFramebuffer> m_swapchainFramebuffers;
 };
