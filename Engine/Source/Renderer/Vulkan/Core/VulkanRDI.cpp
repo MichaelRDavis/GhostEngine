@@ -77,9 +77,7 @@ void CVulkanRDI::Init(const Viewport& viewport)
 
 void CVulkanRDI::Render(F32 deltaTime)
 {
-	U32 index;
-
-	DrawTriangle(0);
+	
 }
 
 void CVulkanRDI::Destroy()
@@ -89,7 +87,7 @@ void CVulkanRDI::Destroy()
 
 void CVulkanRDI::DrawTriangle(U32 index)
 {
-
+	
 }
 
 void CVulkanRDI::InitInstance()
@@ -765,8 +763,35 @@ VkResult CVulkanRDI::AcquireNextImage(U32* image)
 	}
 	else
 	{
-
+		acquireSemaphore = m_recycledSemaphores.back();
+		m_recycledSemaphores.pop_back();
 	}
+
+	VkResult res = vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX, acquireSemaphore, VK_NULL_HANDLE, image);
+	if (res != VK_SUCCESS)
+	{
+		m_recycledSemaphores.push_back(acquireSemaphore);
+		return res;
+	}
+
+	if (m_perFrame[*image].queueSubmitFence != VK_NULL_HANDLE)
+	{
+		vkWaitForFences(m_device, 1, &m_perFrame[*image].queueSubmitFence, true, UINT64_MAX);
+		vkResetFences(m_device, 1, &m_perFrame[*image].queueSubmitFence);
+	}
+
+	if (m_perFrame[*image].primaryCommandPool != VK_NULL_HANDLE)
+	{
+		vkResetCommandPool(m_device, m_perFrame[*image].primaryCommandPool, 0);
+	}
+
+	VkSemaphore oldSemaphore = m_perFrame[*image].swapchainAcquireSemaphore;
+	if (oldSemaphore != VK_NULL_HANDLE)
+	{
+		m_recycledSemaphores.push_back(oldSemaphore);
+	}
+
+	m_perFrame[*image].swapchainAcquireSemaphore = acquireSemaphore;
 
 	return VK_SUCCESS;
 }
