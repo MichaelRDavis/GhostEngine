@@ -42,12 +42,10 @@ public:
 
 private:
 	void InitInstance();
-	void DestroyInstance();
 
 	void InitSurface();
 
 	void InitDevice();
-	void DestroyDevice();
 
 	void InitVertexBuffer();
 
@@ -58,6 +56,10 @@ private:
 	void InitPipeline();
 
 	void InitFramebuffers();
+
+	void InitPerFrame(PerFrame& perFrame);
+
+	void TeardownPerFrame(PerFrame& perFrame);
 
 	bool ValidateExtensions(const std::vector<const char*>& required, const std::vector<VkExtensionProperties>& available);
 
@@ -80,27 +82,25 @@ private:
 #ifdef _DEBUG
 	VkDebugUtilsMessengerEXT m_debugCallback;
 #endif
+	VkSurfaceKHR m_surface;
+
 	I32 m_graphicsQueueIndex;
 	VkPhysicalDevice m_gpu;
 	VkDevice m_device;
-
-	VkSurfaceKHR m_surface;
-
 	VmaAllocator m_vmaAllocator;
 	VmaAllocation m_vertexBufferAllocation;
 	VkBuffer m_vertexBuffer;
 
+	SwapchainDimensions m_swapchainDimensions;
 	VkSwapchainKHR m_swapchain;
 	std::vector<VkImageView> m_swapchainImageViews;
 	std::vector<PerFrame> m_perFrame;
-	SwapchainDimensions m_swapchainDimensions;
+	std::vector<VkFramebuffer> m_swapchainFramebuffers;
 
 	VkRenderPass m_renderPass;
 
 	VkPipelineLayout m_pipelineLayout;
 	VkPipeline m_pipeline;
-
-	std::vector<VkFramebuffer> m_swapchainFramebuffers;
 
 	std::vector<VkSemaphore> m_recycledSemaphores;
 };

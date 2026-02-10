@@ -39,11 +39,22 @@ CVulkanRDI::CVulkanRDI()
 #ifdef _DEBUG
 	m_debugCallback = VK_NULL_HANDLE;
 #endif
+	m_surface = VK_NULL_HANDLE;
+
 	m_graphicsQueueIndex = -1;
 	m_gpu = VK_NULL_HANDLE;
 	m_device = VK_NULL_HANDLE;
+	m_vmaAllocator = VK_NULL_HANDLE;
+	m_vertexBufferAllocation = VK_NULL_HANDLE;
+	m_vertexBuffer = VK_NULL_HANDLE;
 
-	m_surface = VK_NULL_HANDLE;
+	m_swapchainDimensions = {};
+	m_swapchain = VK_NULL_HANDLE;
+
+	m_renderPass = VK_NULL_HANDLE;
+
+	m_pipelineLayout = VK_NULL_HANDLE;
+	m_pipeline = VK_NULL_HANDLE;
 }
 
 CVulkanRDI::~CVulkanRDI()
@@ -73,8 +84,7 @@ void CVulkanRDI::Render(F32 deltaTime)
 
 void CVulkanRDI::Destroy()
 {
-	DestroyInstance();
-	DestroyDevice();
+	
 }
 
 void CVulkanRDI::DrawTriangle(U32 index)
@@ -193,11 +203,6 @@ void CVulkanRDI::InitInstance()
 		vkCreateDebugUtilsMessengerEXT(m_instance, &debugUtilsCreateInfo, nullptr, &m_debugCallback);
 	}
 #endif
-}
-
-void CVulkanRDI::DestroyInstance()
-{
-	
 }
 
 void CVulkanRDI::InitSurface()
@@ -321,11 +326,6 @@ void CVulkanRDI::InitDevice()
 	}
 }
 
-void CVulkanRDI::DestroyDevice()
-{
-
-}
-
 void CVulkanRDI::InitVertexBuffer()
 {
 	const std::vector<Vertex> vertices = {
@@ -445,7 +445,7 @@ void CVulkanRDI::InitSwapchain()
 
 		for (auto& perFrame : m_perFrame)
 		{
-			// TODO: Tear down frame
+			TeardownPerFrame(perFrame);
 		}
 
 		m_swapchainImageViews.clear();
@@ -465,7 +465,7 @@ void CVulkanRDI::InitSwapchain()
 
 	for (U32 i = 0; i < imageCount; i++)
 	{
-		// TODO: Init per frame
+		InitPerFrame(m_perFrame[i]);
 	}
 
 	for (U32 i = 0; i < imageCount; i++)
@@ -635,6 +635,65 @@ void CVulkanRDI::InitFramebuffers()
 		vkCreateFramebuffer(m_device, &fbInfo, nullptr, &framebuffer);
 
 		m_swapchainFramebuffers.emplace_back(framebuffer);
+	}
+}
+
+void CVulkanRDI::InitPerFrame(PerFrame& perFrame)
+{
+	VkFenceCreateInfo info = {};
+	info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	info.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+	vkCreateFence(m_device, &info, nullptr, &perFrame.queueSubmitFence);
+
+	VkCommandPoolCreateInfo cmdPoolInfo = {};
+	cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+	cmdPoolInfo.queueFamilyIndex = (U32)m_graphicsQueueIndex;
+	vkCreateCommandPool(m_device, &cmdPoolInfo, nullptr, &perFrame.primaryCommandPool);
+
+	VkCommandBufferAllocateInfo cmdBufferInfo = {};
+	cmdBufferInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	cmdBufferInfo.commandPool = perFrame.primaryCommandPool;
+	cmdBufferInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	cmdBufferInfo.commandBufferCount = 1;
+
+	vkAllocateCommandBuffers(m_device, &cmdBufferInfo, &perFrame.primaryCommandBuffer);
+}
+
+void CVulkanRDI::TeardownPerFrame(PerFrame& perFrame)
+{
+	if (perFrame.queueSubmitFence != VK_NULL_HANDLE)
+	{
+		vkDestroyFence(m_device, perFrame.queueSubmitFence, nullptr);
+		perFrame.queueSubmitFence = VK_NULL_HANDLE;
+	}
+
+	if (perFrame.primaryCommandBuffer != VK_NULL_HANDLE)
+	{
+		vkFreeCommandBuffers(m_device, perFrame.primaryCommandPool, 1, &perFrame.primaryCommandBuffer);
+
+		perFrame.primaryCommandBuffer = VK_NULL_HANDLE;
+	}
+
+	if (perFrame.primaryCommandPool != VK_NULL_HANDLE)
+	{
+		vkDestroyCommandPool(m_device, perFrame.primaryCommandPool, nullptr);
+
+		perFrame.primaryCommandPool = VK_NULL_HANDLE;
+	}
+
+	if (perFrame.swapchainAcquireSemaphore != VK_NULL_HANDLE)
+	{
+		vkDestroySemaphore(m_device, perFrame.swapchainAcquireSemaphore, nullptr);
+
+		perFrame.swapchainAcquireSemaphore = VK_NULL_HANDLE;
+	}
+
+	if (perFrame.swapchainReleaseSemaphore != VK_NULL_HANDLE)
+	{
+		vkDestroySemaphore(m_device, perFrame.swapchainReleaseSemaphore, nullptr);
+
+		perFrame.swapchainReleaseSemaphore = VK_NULL_HANDLE;
 	}
 }
 
