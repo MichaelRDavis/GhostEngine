@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Core/Logging/Log.h"
-#include "Core/Logging/Assertions.h"
+#include "Logging/Log.h"
+#include "Logging/Assertions.h"
 
-#include "Core/Memory/Memory.h"
-#include "Core/Memory/MemoryTracker.h"
+#include "Memory/Memory.h"
+#include "Memory/MemoryTracker.h"
 
-#include "Core/GhostLib/Containers/ArrayList.h"
-#include "Core/GhostLib/Containers/Array.h"
+#include "GhostLib/Containers/ArrayList.h"
+#include "GhostLib/Containers/Array.h"
 
-#include "Core/GhostLib/SmartPointers/UniquePtr.h"
+#include "GhostLib/SmartPointers/UniquePtr.h"
+#include "GhostLib/SmartPointers/SharedPtr.h"
 
-#include "Core/Math/Vec3.h"
+#include "Math/Vec3.h"
