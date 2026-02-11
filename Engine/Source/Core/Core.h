@@ -9,4 +9,6 @@
 #include "Core/GhostLib/Containers/ArrayList.h"
 #include "Core/GhostLib/Containers/Array.h"
 
+#include "Core/GhostLib/SmartPointers/UniquePtr.h"
+
 #include "Core/Math/Vec3.h"

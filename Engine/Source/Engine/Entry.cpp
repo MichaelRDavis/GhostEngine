@@ -1,4 +1,5 @@
 #include "Platform/Platform.h"
+#include "Core/Core.h"
 #include "Engine/EngineLoop.h"
 
 #ifdef GE_WINDOWS_PLATFORM
