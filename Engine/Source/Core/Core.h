@@ -7,5 +7,6 @@
 #include "Core/Memory/MemoryTracker.h"
 
 #include "Core/GhostLib/Containers/ArrayList.h"
+#include "Core/GhostLib/Containers/Array.h"
 
 #include "Core/Math/Vec3.h"
