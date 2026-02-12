@@ -24,7 +24,7 @@ void CWindowsApplication::Init()
 
 #ifdef _DEBUG
 	AllocConsole();
-	SetConsoleTitleA("Sandbox Console");
+	SetConsoleTitleA("GhostGame Console");
 #endif
 
 	const POINT anchorPoint = { 0, 0 };
@@ -87,7 +87,7 @@ void CWindowsApplication::InitWindow(const WindowDescription& description)
 	m_windowHandle = CreateWindowEx(
 		0,
 		L"WinAppClass",
-		L"Sandbox",
+		L"GhostGame",
 		windowStyle,
 		m_windowWidth,
 		m_windowHeight,

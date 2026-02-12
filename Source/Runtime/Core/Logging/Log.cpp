@@ -1,6 +1,6 @@
 #include "Log.h"
 #include "Core.h"
-#include "OS/Interface/IPlatform.h"
+#include "Platform/OS/IPlatform.h"
 #include "FileSystem/IFileStream.h"
 
 std::unique_ptr<IFileStream> CLog::m_logFile;

@@ -2,7 +2,7 @@
 
 #include "CoreExport.h"
 #include "Core.h"
-#include "OS/Interface/IApplication.h"
+#include "Application/IApplication.h"
 
 #ifdef GE_WINDOWS_PLATFORM
 class CORE_API CWindowsApplication : public IApplication

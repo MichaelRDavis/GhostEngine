@@ -1,11 +1,11 @@
 #include "EngineLoop.h"
 #include "Timer/ITimer.h"
-#include "OS/Interface/IPlatform.h"
+#include "Platform/OS/IPlatform.h"
 #include "Core.h"
 #include "IEngine.h"
 #include "RenderCore/IRDI.h"
 #ifdef GE_WINDOWS_PLATFORM
-#include "OS/Windows/WindowsApplication.h"
+#include "Application/Windows/WindowsApplication.h"
 #endif
 
 CEngineLoop::CEngineLoop()

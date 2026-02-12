@@ -1,4 +1,4 @@
-#include "OS/Interface/IPlatform.h"
+#include "Platform/OS/IPlatform.h"
 
 #ifdef GE_WINDOWS_PLATFORM
 void IPlatform::Sleep(U32 ms)
