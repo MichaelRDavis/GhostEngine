@@ -3,8 +3,6 @@
 #ifdef _WIN64
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#elif __linux__
-#include <SDL3/SDL.h>
 #endif
 
 // C header includes 

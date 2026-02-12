@@ -20,7 +20,7 @@ public:
 	
 	static void RemoveAllocation(U64 size, EMemoryTag tag);
 
-	//static char* GetMemoryUsage();
+	static char* GetMemoryUsage();
 
 private:
 	static MemoryStats m_memoryStats;

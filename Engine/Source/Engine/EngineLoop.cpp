@@ -6,8 +6,6 @@
 #include "Renderer/RDI.h"
 #ifdef GE_WINDOWS_PLATFORM
 #include "Platform/OS/Windows/WindowsApplication.h"
-#elif GE_LINUX_PLATFORM
-#include "Platform/OS/Linux/LinuxApplication.h"
 #endif
 
 CEngineLoop::CEngineLoop()
@@ -40,8 +38,6 @@ void CEngineLoop::Init()
 	WindowDescription winDesc;
 #ifdef GE_WINDOWS_PLATFORM
 	m_application = new CWindowsApplication();
-#elif GE_LINUX_PLATFORM
-	m_application = new CLinuxApplication();
 #endif
 	m_application->Init();
 	m_application->InitWindow(winDesc);
@@ -60,9 +56,9 @@ void CEngineLoop::Init()
 
 void CEngineLoop::Run()
 {
-//#ifdef _DEBUG
-//	GE_LOG(Log, CMemoryTracker::GetMemoryUsage());
-//#endif
+#ifdef _DEBUG
+	GE_LOG(Log, CMemoryTracker::GetMemoryUsage());
+#endif
 
 	while (m_isRunning)
 	{
