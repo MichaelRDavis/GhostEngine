@@ -1,18 +1,20 @@
 workspace "GhostEngine"
     configurations 
     {
-        "DebugGame",
-        "ReleaseGame",
+        "Debug",
+        "Release",
     }
 
     platforms
-    {
+    {   -- VS 2026 does not support custom platform names
         "x64"
     }
 
-    filter { "configurations:DebugGame" }
+    startproject "Engine"
+
+    filter { "configurations:Debug" }
         symbols "On"
-    filter { "configurations:ReleaseGame" }
+    filter { "configurations:Release" }
         optimize "On"
 
     filter { "platforms:x64" }
@@ -20,60 +22,18 @@ workspace "GhostEngine"
         architecture "x86_64"
 
     group "Engine"
-        project "GhostGame"
         project "Engine"
-        project "VulkanRDI"
-        project "RDI"
-        project "Core"
 
-project "GhostGame"
-    location "Source/Runtime/GhostGame"
-    kind "WindowedApp"
-    language "C++"
-    cppdialect "C++20"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    files 
-    {
-        "Source/Runtime/GhostGame/**.h",
-        "Source/Runtime/GhostGame/**.cpp"
-    }
-
-    includedirs
-    {
-        "Source/Runtime/GhostGame",
-        "Source/Runtime/Engine",
-        "Source/Runtime/VulkanRDI",
-        "Source/Runtime/RDI",
-        "Source/Runtime/Core"
-    }
-
-    libdirs
-    {
-        "Binaries"
-    }
-
-    links
-    {
-        "Core",
-        "RDI",
-        "VulkanRDI",
-        "Engine"
-    }
+    group "ThirdParty"
+        project "glad"
 
 project "Engine"
     location "Source/Runtime/Engine"
-    kind "Sharedlib"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
     targetdir "Binaries"
     objdir "Intermediates"
-
-    defines
-    {
-        "ENGINE_EXPORT"
-    }
 
     files 
     {
@@ -84,128 +44,38 @@ project "Engine"
     includedirs
     {
         "Source/Runtime/Engine",
-        "Source/Runtime/VulkanRDI",
-        "Source/Runtime/RDI",
-        "Source/Runtime/Core",
 
-        "C:/VulkanSDK/1.4.304.1/Include"
-    }
-
-    libdirs
-    {
-        "Binaries"
-    }
-
-    links
-    {
-        "Core",
-        "RDI",
-        "VulkanRDI",
-    }
-
-project "VulkanRDI"
-    location "Source/Runtime/VulkanRDI"
-    kind "Sharedlib"
-    language "C++"
-    cppdialect "C++20"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    defines
-    {
-        "VULKANRDI_EXPORT"
-    }
-
-    files 
-    {
-        "Source/Runtime/VulkanRDI/**.h",
-        "Source/Runtime/VulkanRDI/**.cpp"
-    }
-
-    includedirs
-    {
-        "Source/Runtime/VulkanRDI",
-        "Source/Runtime/RDI",
-        "Source/Runtime/Core",
-
-        "C:/VulkanSDK/1.4.304.1/Include"
+        "Source/ThirdParty/glad/include",
+        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
     {
         "Binaries",
 
-        "C:/VulkanSDK/1.4.304.1/Lib"
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
     }
 
     links
     {
-        "Core",
-        "RDI",
-
-        "volkd.lib"
+        "glad",
+        "SDL3"
     }
 
-project "RDI"
-    location "Source/Runtime/RDI"
-    kind "Sharedlib"
-    language "C++"
-    cppdialect "C++20"
+project "glad"
+    location "Source/ThirdParty/glad"
+    kind "StaticLib"
+    language "C"
     targetdir "Binaries"
     objdir "Intermediates"
 
-    defines
-    {
-        "RDI_EXPORT"
-    }
-
     files 
     {
-        "Source/Runtime/RDI/**.h",
-        "Source/Runtime/RDI/**.cpp"
+        "Source/ThirdParty/glad/include/glad/**.h",
+        "Source/ThirdParty/glad/src/**.c"
     }
 
     includedirs
     {
-        "Source/Runtime/RDI",
-        "Source/Runtime/Core"
-    }
-
-    libdirs
-    {
-        "Binaries"
-    }
-
-    links
-    {
-        "Core"
-    }
-
-project "Core"
-    location "Source/Runtime/Core"
-    kind "Sharedlib"
-    language "C++"
-    cppdialect "C++20"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    defines
-    {
-        "CORE_EXPORT"
-    }
-
-    files 
-    {
-        "Source/Runtime/Core/**.h",
-        "Source/Runtime/Core/**.cpp"
-    }
-
-    includedirs
-    {
-        "Source/Runtime/Core"
-    }
-
-    libdirs
-    {
-        "Binaries"
+        "Source/ThirdParty/glad/include/"
     }

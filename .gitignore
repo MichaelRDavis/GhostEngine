@@ -9,8 +9,8 @@
 *.txt
 *.exe
 
-# Ignore ThirdPartySDKs folder, downloaded by end-user
-**/ThirdPartySDKs/**
+# Ignore ThirdParty folder, downloaded by end-user
+**/ThirdParty/**
 
 # Ignore engine built binaries 
 **/Binaries/**
