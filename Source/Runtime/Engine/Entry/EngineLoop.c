@@ -1,20 +1,9 @@
-#include <SDL3/SDL.h>
-#include <glad/glad.h>
-
-#include <stdint.h>
-
-struct Window
-{
-	const char* title;
-	int width;
-	int height;
-	SDL_Window* handle;
-} typedef Window;
+#include "OS/System.h"
+#include "Renderer/Renderer.h"
 
 int main()
 {
-	int32_t subsystemFlags = SDL_INIT_VIDEO;
-	if (!SDL_Init(subsystemFlags))
+	if (Sys_Init() != 0)
 	{
 		return -1;
 	}
@@ -23,29 +12,27 @@ int main()
 	window.title = "Engine";
 	window.width = 1920;
 	window.height = 1080;
+	window.handle = 0;
 
-	int32_t windowFlags = SDL_WINDOW_OPENGL;
-	window.handle = SDL_CreateWindow(window.title, window.width, window.height, windowFlags);
-	if (window.handle == NULL)
+	App app;
+	app.bHasQuit = 0;
+	app.window = window;
+
+	if (Sys_CreateWindow(&app.window) != 0)
 	{
 		return -1;
 	}
 
-	SDL_ShowWindow(window.handle);
+	RendererInfo info;
+	info.context = 0;
+	Renderer_CreateContext(&app.window, &info);
 
-	bool hasQuit = false;
-
-	while (!hasQuit)
+	while (!app.bHasQuit)
 	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			if (event.type == SDL_EVENT_QUIT)
-			{
-				hasQuit = true;
-				SDL_DestroyWindow(window.handle);
-				SDL_Quit();
-			}
-		}
+		Sys_Run(&app);
+		Renderer_Clear();
+		Renderer_SwapBuffers(&app.window);
 	}
+
+	return 0;
 }
