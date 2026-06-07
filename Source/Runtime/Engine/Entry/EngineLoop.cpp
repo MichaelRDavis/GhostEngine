@@ -1,16 +1,10 @@
 #include <SDL3/SDL.h>
 #include <glad/glad.h>
 
-SDL_Window* window = nullptr;
+#include "ApplicationCore/Window.h"
+
 SDL_GLContext context = nullptr;
 bool isRunning = false;
-
-struct WindowProperties
-{
-	const char* title;
-	int width;
-	int height;
-};
 
 int main()
 {
@@ -26,22 +20,20 @@ int main()
 	winProps.width = 1920;
 	winProps.height = 1080;
 
-	int windowFlags = SDL_WINDOW_OPENGL;
-	window = SDL_CreateWindow(winProps.title, winProps.width, winProps.height, windowFlags);
-	if (window == nullptr)
+	IWindow* window = new IWindow();
+	if (!window->InitWindow(winProps))
 	{
-		SDL_Log("Window could not be created! SDL error: %s\n", SDL_GetError());
 		return -1;
 	}
 
-	context = SDL_GL_CreateContext(window);
+	context = SDL_GL_CreateContext(window->GetHandle());
 	if (context == nullptr)
 	{
 		SDL_Log("GL context could not be created! SDL error: %s\n", SDL_GetError());
 		return -1;
 	}
 
-	SDL_GL_MakeCurrent(window, context);
+	SDL_GL_MakeCurrent(window->GetHandle(), context);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 	{
@@ -61,9 +53,7 @@ int main()
 			{
 				isRunning = false;
 
-				SDL_DestroyWindow(window);
-				window = nullptr;
-
+				window->DestroyWindow();
 				SDL_Quit();
 			}
 		}
@@ -71,7 +61,7 @@ int main()
 		glClearColor(0.3f, 0.7f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		SDL_GL_SwapWindow(window);
+		SDL_GL_SwapWindow(window->GetHandle());
 	}
 
 	return 0;
