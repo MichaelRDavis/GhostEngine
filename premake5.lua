@@ -30,15 +30,15 @@ workspace "GhostEngine"
 project "Engine"
     location "Source/Runtime/Engine"
     kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++20"
+    language "C"
+    cdialect "C23"
     targetdir "Binaries"
     objdir "Intermediates"
 
     files 
     {
         "Source/Runtime/Engine/**.h",
-        "Source/Runtime/Engine/**.cpp"
+        "Source/Runtime/Engine/**.c"
     }
 
     includedirs
