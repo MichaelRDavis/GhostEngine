@@ -23,6 +23,7 @@ workspace "GhostEngine"
 
     group "Engine"
         project "Engine"
+        project "Core"
 
     group "ThirdParty"
         project "glad"
@@ -44,7 +45,7 @@ project "Engine"
     includedirs
     {
         "Source/Runtime/Engine",
-
+        "Source/Runtime/Core",
         "Source/ThirdParty/glad/include",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
@@ -52,13 +53,49 @@ project "Engine"
     libdirs
     {
         "Binaries",
-
         "Source/ThirdParty/SDL3-3.4.10/lib/x64",
     }
 
     links
     {
-        "glad",
+        "Core",
+        "SDL3",
+        "glad"
+    }
+
+project "Core"
+    location "Source/Runtime/Core"
+    kind "SharedLib"
+    language "C"
+    cdialect "C23"
+    targetdir "Binaries"
+    objdir "Intermediates"
+    
+    defines
+    {
+        "CORE_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/Core/**.h",
+        "Source/Runtime/Core/**.c"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/ThirdParty/SDL3-3.4.10/include"
+    }
+
+    libdirs
+    {
+        "Binaries",
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
+    }
+
+    links
+    {
         "SDL3"
     }
 
