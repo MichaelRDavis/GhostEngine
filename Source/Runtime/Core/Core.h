@@ -2,5 +2,3 @@
 
 #include "Platform/PlatformTypes.h"
 #include "Platform/PlatformDetection.h"
-
-#include "Test/Test.h"
