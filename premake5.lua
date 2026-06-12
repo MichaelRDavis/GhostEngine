@@ -25,9 +25,6 @@ workspace "GhostEngine"
         project "Engine"
         project "Core"
 
-    group "ThirdParty"
-        project "glad"
-
 project "Engine"
     location "Source/Runtime/Engine"
     kind "ConsoleApp"
@@ -46,21 +43,16 @@ project "Engine"
     {
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
-        "Source/ThirdParty/glad/include",
-        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
     {
         "Binaries",
-        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
     }
 
     links
     {
         "Core",
-        "SDL3",
-        "glad"
     }
 
 project "Core"
@@ -85,34 +77,14 @@ project "Core"
     includedirs
     {
         "Source/Runtime/Core",
-        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
     {
         "Binaries",
-        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
     }
 
     links
     {
-        "SDL3"
-    }
 
-project "glad"
-    location "Source/ThirdParty/glad"
-    kind "StaticLib"
-    language "C"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    files 
-    {
-        "Source/ThirdParty/glad/include/glad/**.h",
-        "Source/ThirdParty/glad/src/**.c"
-    }
-
-    includedirs
-    {
-        "Source/ThirdParty/glad/include/"
     }

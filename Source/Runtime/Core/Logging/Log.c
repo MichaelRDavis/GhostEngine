@@ -24,7 +24,7 @@ void Log_Destroy()
 	
 }
 
-CORE_API void Log_PrintMessage(LogVerbosity verbosity, const char* msg, ...)
+void Log_PrintMessage(LogVerbosity verbosity, const char* msg, ...)
 {
 	char outMsg[32000];
 	memset(outMsg, 0, sizeof(outMsg));

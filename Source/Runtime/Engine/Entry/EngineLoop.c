@@ -10,5 +10,19 @@ int main()
 	GE_LOG(Verbose, "Hello World!");
 	GE_LOG(VeryVerbose, "Hello World!");
 
+	FWindowDefinition windowDefinition;
+	windowDefinition.title = "Engine";
+	windowDefinition.winWidth = 1920;
+	windowDefinition.winHeight = 1080;
+
+	FApplication app;
+
+	App_Init(&app, &windowDefinition);
+
+	while (TRUE)
+	{
+		App_Run(&app);
+	}
+
 	return 0;
 }

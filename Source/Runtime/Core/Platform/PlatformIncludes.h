@@ -4,4 +4,5 @@
 
 #ifdef GE_WINDOWS_PLATFORM
 	#include <windows.h>
+	#include <windowsx.h>
 #endif

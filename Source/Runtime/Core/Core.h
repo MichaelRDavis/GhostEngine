@@ -6,3 +6,5 @@
 
 #include "Logging/Log.h"
 #include "Logging/Assertions.h"
+
+#include "Application/Application.h"
