@@ -47,6 +47,7 @@ project "Sandbox"
         "Source/Runtime/Sandbox",
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
+        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
@@ -85,6 +86,7 @@ project "Engine"
     {
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
+        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
