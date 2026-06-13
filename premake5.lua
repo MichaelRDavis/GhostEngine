@@ -39,7 +39,7 @@ project "Sandbox"
     files 
     {
         "Source/Runtime/Sandbox/**.h",
-        "Source/Runtime/Sandbox/**.c"
+        "Source/Runtime/Sandbox/**.cpp"
     }
 
     includedirs
@@ -52,12 +52,14 @@ project "Sandbox"
     libdirs
     {
         "Binaries",
+        "ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
     {
         "Core",
-        "Engine"
+        "Engine",
+        "SDL3"
     }
 
 project "Engine"
@@ -76,7 +78,7 @@ project "Engine"
     files 
     {
         "Source/Runtime/Engine/**.h",
-        "Source/Runtime/Engine/**.c"
+        "Source/Runtime/Engine/**.cpp"
     }
 
     includedirs
@@ -88,11 +90,13 @@ project "Engine"
     libdirs
     {
         "Binaries",
+        "ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
     {
         "Core",
+        "SDL3"
     }
 
 project "Core"
@@ -111,20 +115,22 @@ project "Core"
     files 
     {
         "Source/Runtime/Core/**.h",
-        "Source/Runtime/Core/**.c"
+        "Source/Runtime/Core/**.cpp"
     }
 
     includedirs
     {
         "Source/Runtime/Core",
+        "ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
     {
         "Binaries",
+        "ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
     {
-
+        "SDL3"
     }
