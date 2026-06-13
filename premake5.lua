@@ -52,7 +52,7 @@ project "Sandbox"
     libdirs
     {
         "Binaries",
-        "ThirdParty/SDL3-3.4.10/lib/x64"
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
@@ -90,7 +90,7 @@ project "Engine"
     libdirs
     {
         "Binaries",
-        "ThirdParty/SDL3-3.4.10/lib/x64"
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
@@ -121,13 +121,13 @@ project "Core"
     includedirs
     {
         "Source/Runtime/Core",
-        "ThirdParty/SDL3-3.4.10/include"
+        "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
     libdirs
     {
         "Binaries",
-        "ThirdParty/SDL3-3.4.10/lib/x64"
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
