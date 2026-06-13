@@ -21,14 +21,22 @@ struct Color
 struct VertexBuffer
 {
 	uint32_t id;
-	uint32_t buffer;
+	uint32_t vbo;
+	uint64_t size;
 	void* data;
 };
 
 struct VertexArray
 {
 	uint32_t id;
-	uint32_t vertexArray;
+	uint32_t vao;
+};
+
+struct VertexAttribute
+{
+	uint32_t index;
+	uint32_t size;
+	uint64_t stride;
 };
 
 class OPENGLRDI_API IRDI
@@ -43,11 +51,11 @@ public:
 
 	virtual void CreateViewport(const RenderViewport& viewport) {}
 
-	virtual void SubmitVertexBuffer(const VertexBuffer& buffer) {}
+	virtual void SubmitVertexBuffer(VertexBuffer& buffer) {}
 
-	virtual void SubmitVertexArray(const VertexArray& vertexArray) {}
+	virtual void SubmitVertexArray(VertexArray& vertexArray) {}
 
-	virtual void SubmitVertexAttribute() {}
+	virtual void SubmitVertexAttribute(VertexAttribute& vertexAttribute) {}
 
 	virtual void SubmitShader(const char* vertexSrc, const char* fragSrc) {}
 

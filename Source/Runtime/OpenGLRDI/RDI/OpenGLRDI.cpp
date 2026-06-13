@@ -27,9 +27,6 @@ void COpenGLRDI::Init()
 		0.0f,  0.5f, 0.0f
 	};
 
-	int32_t bSuccess;
-	char log[512];
-
 	const char* vertexShaderSource = "#version 330 core\n"
 		"layout (location = 0) in vec3 aPos;\n"
 		"void main()\n"
@@ -44,62 +41,24 @@ void COpenGLRDI::Init()
 		"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 		"}\n\0";
 
-	uint32_t vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-	glCompileShader(vertexShader);
+	SubmitShader(vertexShaderSource, fragmentShaderSource);
 
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &bSuccess);
-	if (!bSuccess)
-	{
-		glGetShaderInfoLog(vertexShader, 512, nullptr, log);
-		printf("Vertex shader compilation failed! Error: %s\n", log);
-		return;
-	}
+	VertexBuffer vertexBuffer;
+	vertexBuffer.data = vertices;
+	vertexBuffer.size = sizeof(vertices);
+	vertexBuffer.id = 1;
 
-	uint32_t fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-	glCompileShader(fragmentShader);
+	VertexArray vertexArray;
+	vertexArray.id = 1;
 
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &bSuccess);
-	if (!bSuccess)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, nullptr, log);
-		printf("Fragment shader compilation failed! Error: %s\n", log);
-		return;
-	}
+	VertexAttribute vertexAtrrib;
+	vertexAtrrib.index = 0;
+	vertexAtrrib.size = 3;
+	vertexAtrrib.stride = 3 * sizeof(float);
 
-	uint32_t shaderProgram;
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &bSuccess);
-	if (!bSuccess)
-	{
-		glGetProgramInfoLog(shaderProgram, 512, nullptr, log);
-		printf("Shader linkage failed! Error: %s\n", log);
-		return;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	uint32_t vertexBuffer;
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	uint32_t vertexArray;
-	glGenVertexArrays(1, &vertexArray);
-	glBindVertexArray(vertexArray);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glUseProgram(shaderProgram);
+	SubmitVertexArray(vertexArray);
+	SubmitVertexBuffer(vertexBuffer);
+	SubmitVertexAttribute(vertexAtrrib);
 }
 
 void COpenGLRDI::Render()
@@ -141,19 +100,74 @@ void COpenGLRDI::CreateViewport(const RenderViewport& viewport)
 	SDL_GL_MakeCurrent((SDL_Window*)mViewport.windowSurface, mContext);
 }
 
-void COpenGLRDI::SubmitVertexBuffer(const VertexBuffer& buffer)
+void COpenGLRDI::SubmitVertexBuffer(VertexBuffer& buffer)
 {
-	
+	glGenBuffers(buffer.id, &buffer.vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer.vbo);
+	glBufferData(GL_ARRAY_BUFFER, buffer.size, buffer.data, GL_STATIC_DRAW);
 }
 
-void COpenGLRDI::SubmitVertexAttribute()
+void COpenGLRDI::SubmitVertexArray(VertexArray& vertexArray)
 {
+	glGenVertexArrays(vertexArray.id, &vertexArray.vao);
+	glBindVertexArray(vertexArray.vao);
+}
 
+void COpenGLRDI::SubmitVertexAttribute(VertexAttribute& vertexAttribute)
+{
+	glVertexAttribPointer(vertexAttribute.index, vertexAttribute.size, GL_FLOAT, GL_FALSE, vertexAttribute.stride, (void*)0);
+	glEnableVertexAttribArray(vertexAttribute.index);
 }
 
 void COpenGLRDI::SubmitShader(const char* vertexSrc, const char* fragSrc)
 {
+	int32_t bSuccess;
+	char log[512];
 
+	uint32_t vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSrc, nullptr);
+	glCompileShader(vertexShader);
+
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &bSuccess);
+	if (!bSuccess)
+	{
+		glGetShaderInfoLog(vertexShader, 512, nullptr, log);
+		printf("Vertex shader compilation failed! Error: %s\n", log);
+		return;
+	}
+
+	uint32_t fragmentShader;
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragSrc, nullptr);
+	glCompileShader(fragmentShader);
+
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &bSuccess);
+	if (!bSuccess)
+	{
+		glGetShaderInfoLog(fragmentShader, 512, nullptr, log);
+		printf("Fragment shader compilation failed! Error: %s\n", log);
+		return;
+	}
+
+	uint32_t shaderProgram;
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &bSuccess);
+	if (!bSuccess)
+	{
+		glGetProgramInfoLog(shaderProgram, 512, nullptr, log);
+		printf("Shader linkage failed! Error: %s\n", log);
+		return;
+	}
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glUseProgram(shaderProgram);
 }
 
 void COpenGLRDI::SwapBuffers()
