@@ -15,6 +15,12 @@ public:
 
 	virtual void CreateViewport(const RenderViewport& viewport);
 
+	virtual void SubmitVertexBuffer(const VertexBuffer& buffer);
+
+	virtual void SubmitVertexAttribute();
+
+	virtual void SubmitShader(const char* vertexSrc, const char* fragSrc);
+
 	virtual void SwapBuffers();
 	virtual void ClearColor(const Color& color);
 	virtual void Clear();
