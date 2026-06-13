@@ -26,6 +26,14 @@ struct VertexBuffer
 	void* data;
 };
 
+struct IndexBuffer
+{
+	uint32_t id;
+	uint32_t ebo;
+	uint64_t size;
+	void* data;
+};
+
 struct VertexArray
 {
 	uint32_t id;
@@ -52,6 +60,8 @@ public:
 	virtual void CreateViewport(const RenderViewport& viewport) {}
 
 	virtual void SubmitVertexBuffer(VertexBuffer& buffer) {}
+
+	virtual void SubmitIndexBuffer(IndexBuffer& buffer) {}
 
 	virtual void SubmitVertexArray(VertexArray& vertexArray) {}
 

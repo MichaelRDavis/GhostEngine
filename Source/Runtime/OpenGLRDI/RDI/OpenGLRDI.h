@@ -17,6 +17,8 @@ public:
 
 	virtual void SubmitVertexBuffer(VertexBuffer& buffer);
 
+	virtual void SubmitIndexBuffer(IndexBuffer& buffer);
+
 	virtual void SubmitVertexArray(VertexArray& vertexArray);
 
 	virtual void SubmitVertexAttribute(VertexAttribute& vertexAttribute);

@@ -22,9 +22,16 @@ void COpenGLRDI::Init()
 
 	float vertices[] = 
 	{
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f
+	    0.5f,  0.5f, 0.0f,  
+		 0.5f, -0.5f, 0.0f,  
+		-0.5f, -0.5f, 0.0f,  
+		-0.5f,  0.5f, 0.0f
+	};
+
+	unsigned int indices[] =
+	{  
+		0, 1, 3,
+		1, 2, 3  
 	};
 
 	const char* vertexShaderSource = "#version 330 core\n"
@@ -44,9 +51,14 @@ void COpenGLRDI::Init()
 	SubmitShader(vertexShaderSource, fragmentShaderSource);
 
 	VertexBuffer vertexBuffer;
+	vertexBuffer.id = 1;
 	vertexBuffer.data = vertices;
 	vertexBuffer.size = sizeof(vertices);
-	vertexBuffer.id = 1;
+
+	IndexBuffer indexBuffer;
+	indexBuffer.id = 1;
+	indexBuffer.data = indices;
+	indexBuffer.size = sizeof(indices);
 
 	VertexArray vertexArray;
 	vertexArray.id = 1;
@@ -58,6 +70,7 @@ void COpenGLRDI::Init()
 
 	SubmitVertexArray(vertexArray);
 	SubmitVertexBuffer(vertexBuffer);
+	SubmitIndexBuffer(indexBuffer);
 	SubmitVertexAttribute(vertexAtrrib);
 }
 
@@ -72,7 +85,8 @@ void COpenGLRDI::Render()
 	ClearColor(color);
 	Clear();
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	SwapBuffers();
 }
@@ -105,6 +119,13 @@ void COpenGLRDI::SubmitVertexBuffer(VertexBuffer& buffer)
 	glGenBuffers(buffer.id, &buffer.vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer.vbo);
 	glBufferData(GL_ARRAY_BUFFER, buffer.size, buffer.data, GL_STATIC_DRAW);
+}
+
+void COpenGLRDI::SubmitIndexBuffer(IndexBuffer& buffer)
+{
+	glGenBuffers(buffer.id, &buffer.ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer.size, buffer.data, GL_STATIC_DRAW);
 }
 
 void COpenGLRDI::SubmitVertexArray(VertexArray& vertexArray)
