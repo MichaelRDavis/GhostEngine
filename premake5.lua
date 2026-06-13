@@ -27,6 +27,10 @@ workspace "GhostEngine"
     group "Engine"
         project "Engine"
         project "Core"
+        project "OpenGLRDI"
+
+    group "ThirdParty"
+        project "glad"
 
 project "Sandbox"
     location "Source/Runtime/Sandbox"
@@ -46,6 +50,7 @@ project "Sandbox"
     {
         "Source/Runtime/Sandbox",
         "Source/Runtime/Engine",
+        "Source/Runtime/OpenGLRDI",
         "Source/Runtime/Core",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
@@ -59,8 +64,9 @@ project "Sandbox"
     links
     {
         "Core",
+        "OpenGLRDI",
         "Engine",
-        "SDL3"
+        "SDL3",
     }
 
 project "Engine"
@@ -86,6 +92,7 @@ project "Engine"
     {
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
+        "Source/Runtime/OpenGLRDI",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
@@ -98,7 +105,46 @@ project "Engine"
     links
     {
         "Core",
+        "OpenGLRDI",
         "SDL3"
+    }
+
+project "OpenGLRDI"
+    location "Source/Runtime/OpenGLRDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+    
+    defines
+    {
+        "OPENGLRDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/OpenGLRDI/**.h",
+        "Source/Runtime/OpenGLRDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/OpenGLRDI",
+        "Source/ThirdParty/SDL3-3.4.10/include",
+        "Source/ThirdParty/glad/include"
+    }
+
+    libdirs
+    {
+        "Binaries",
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
+    }
+
+    links
+    {
+        "SDL3",
+        "glad",
     }
 
 project "Core"
@@ -135,4 +181,22 @@ project "Core"
     links
     {
         "SDL3"
+    }
+
+project "glad"
+    location "Source/ThirdParty/glad"
+    kind "StaticLib"
+    language "C"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    files 
+    {
+        "Source/ThirdParty/glad/include/**.h",
+        "Source/ThirdParty/glad/src/**.c"
+    }
+
+    includedirs
+    {
+       "Source/ThirdParty/glad/include"
     }

@@ -1,5 +1,6 @@
 #include "Platform/IPlatform.h"
 #include "ApplicationCore/IApplication.h"
+#include "RDI/OpenGLRDI.h"
 
 int main()
 {
@@ -18,9 +19,19 @@ int main()
 	IApplication* app = IPlatform::CreateApplication(appInfo);
 	app->Init();
 
+	RenderViewport viewport;
+	viewport.windowSurface = app->GetWindow()->GetWindowHandle();
+	viewport.viewportWidth = winInfo.width;
+	viewport.viewportHeight = winInfo.height;
+
+	IRDI* renderDevice = new COpenGLRDI();
+	renderDevice->CreateViewport(viewport);
+	renderDevice->Init();
+
 	while (true)
 	{
 		app->Run();
+		renderDevice->Render();
 	}
 
 	return 0;
