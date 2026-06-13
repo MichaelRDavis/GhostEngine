@@ -10,7 +10,7 @@ workspace "GhostEngine"
         "x64"
     }
 
-    startproject "Engine"
+    startproject "Sandbox"
 
     filter { "configurations:Debug" }
         symbols "On"
@@ -21,18 +21,58 @@ workspace "GhostEngine"
         system "Windows"
         architecture "x86_64"
 
+    group "Sandbox"
+        project "Sandbox"
+
     group "Engine"
         project "Engine"
         project "Core"
 
-project "Engine"
-    location "Source/Runtime/Engine"
+project "Sandbox"
+    location "Source/Runtime/Sandbox"
     kind "ConsoleApp"
-    language "C"
-    cdialect "C23"
+    language "C++"
+    cppdialect "C++11"
     targetdir "Binaries"
     objdir "Intermediates"
 
+    files 
+    {
+        "Source/Runtime/Sandbox/**.h",
+        "Source/Runtime/Sandbox/**.c"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Sandbox",
+        "Source/Runtime/Engine",
+        "Source/Runtime/Core",
+    }
+
+    libdirs
+    {
+        "Binaries",
+    }
+
+    links
+    {
+        "Core",
+        "Engine"
+    }
+
+project "Engine"
+    location "Source/Runtime/Engine"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "ENGINE_EXPORT"
+    }
+    
     files 
     {
         "Source/Runtime/Engine/**.h",
@@ -58,8 +98,8 @@ project "Engine"
 project "Core"
     location "Source/Runtime/Core"
     kind "SharedLib"
-    language "C"
-    cdialect "C23"
+    language "C++"
+    cppdialect "C++11"
     targetdir "Binaries"
     objdir "Intermediates"
     
