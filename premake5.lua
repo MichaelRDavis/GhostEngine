@@ -27,13 +27,13 @@ workspace "GhostEngine"
     group "Engine"
         project "Engine"
         project "Core"
-        project "OpenGLRDI"
+        project "RDI"
 
     group "ThirdParty"
         project "glad"
 
 project "Sandbox"
-    location "Source/Runtime/Sandbox"
+    location "Source/Sandbox/Sandbox"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++11"
@@ -42,15 +42,15 @@ project "Sandbox"
 
     files 
     {
-        "Source/Runtime/Sandbox/**.h",
-        "Source/Runtime/Sandbox/**.cpp"
+        "Source/Sandbox/Sandbox/**.h",
+        "Source/Sandbox/Sandbox/**.cpp"
     }
 
     includedirs
     {
-        "Source/Runtime/Sandbox",
+        "Source/Sandbox/Sandbox",
         "Source/Runtime/Engine",
-        "Source/Runtime/OpenGLRDI",
+        "Source/Runtime/RDI",
         "Source/Runtime/Core",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
@@ -64,7 +64,7 @@ project "Sandbox"
     links
     {
         "Core",
-        "OpenGLRDI",
+        "RDI",
         "Engine",
         "SDL3",
     }
@@ -92,7 +92,7 @@ project "Engine"
     {
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
-        "Source/Runtime/OpenGLRDI",
+        "Source/Runtime/RDI",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
@@ -105,12 +105,12 @@ project "Engine"
     links
     {
         "Core",
-        "OpenGLRDI",
+        "RDI",
         "SDL3"
     }
 
-project "OpenGLRDI"
-    location "Source/Runtime/OpenGLRDI"
+project "RDI"
+    location "Source/Runtime/RDI"
     kind "SharedLib"
     language "C++"
     cppdialect "C++11"
@@ -119,18 +119,18 @@ project "OpenGLRDI"
     
     defines
     {
-        "OPENGLRDI_EXPORT"
+        "RDI_EXPORT"
     }
 
     files 
     {
-        "Source/Runtime/OpenGLRDI/**.h",
-        "Source/Runtime/OpenGLRDI/**.cpp"
+        "Source/Runtime/RDI/**.h",
+        "Source/Runtime/RDI/**.cpp"
     }
 
     includedirs
     {
-        "Source/Runtime/OpenGLRDI",
+        "Source/Runtime/RDI",
         "Source/ThirdParty/SDL3-3.4.10/include",
         "Source/ThirdParty/glad/include"
     }
