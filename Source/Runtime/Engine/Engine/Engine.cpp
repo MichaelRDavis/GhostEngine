@@ -11,10 +11,15 @@ CEngine::~CEngine()
 	Destroy();
 }
 
-void CEngine::Init()
+bool CEngine::Init()
 {
 	mRenderer = new IRDI();
-	mRenderer->Init();
+	if (!mRenderer->Init())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void CEngine::Update()

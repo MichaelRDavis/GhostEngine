@@ -12,7 +12,7 @@ public:
 	IRDI() {}
 	virtual ~IRDI() {}
 
-	virtual void Init() {}
+	virtual bool Init() { return true; }
 	virtual void Render() {}
 	virtual void Destroy() {}
 };

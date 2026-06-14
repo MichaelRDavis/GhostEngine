@@ -6,6 +6,7 @@
 	#define ENGINE_API __declspec(dllimport)
 #endif
 
+class IApplication;
 class CEngine;
 
 class ENGINE_API CEngineLoop
@@ -21,6 +22,7 @@ public:
 	void Destroy();
 
 private:
+	IApplication* mApp;
 	bool mIsInitialised;
 };
 
