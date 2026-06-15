@@ -22,6 +22,7 @@ void CEngineLoop::Init()
 	appInfo.windowHeight = 1080;
 	appInfo.isWindowed = true;
 	appInfo.hasConsole = true;
+	appInfo.centerWindow = true;
 
 	mApp = IPlatform::CreateApplication();
 	if (!mApp->AppInit(appInfo))

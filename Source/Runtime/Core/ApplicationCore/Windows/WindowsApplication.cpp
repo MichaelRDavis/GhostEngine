@@ -47,22 +47,6 @@ bool CWindowsApplication::AppInit(const ApplicationInfo& appInfo)
 
 	if (mAppInfo.isWindowed)
 	{
-		int clientX = mAppInfo.windowPosX;
-		int clientY = mAppInfo.windowPosY;
-		int clientWidth = mAppInfo.windowWidth;
-		int clientHeight = mAppInfo.windowHeight;
-
-		if (clientX == 0 && clientY == 0)
-		{
-			clientX = CW_USEDEFAULT;
-			clientY = CW_USEDEFAULT;
-		}
-
-		int winPosX = clientX;
-		int winPosY = clientY;
-		int winWidth = clientWidth;
-		int winHeight = clientHeight;
-
 		int windowStyle = WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION;
 		int windowExStyle = WS_EX_APPWINDOW;
 
@@ -70,13 +54,31 @@ bool CWindowsApplication::AppInit(const ApplicationInfo& appInfo)
 		windowStyle |= WS_MINIMIZEBOX;
 		windowStyle |= WS_THICKFRAME;
 
-		RECT borderRect = {0,0,0,0};
-		AdjustWindowRectEx(&borderRect, windowStyle, 0, windowExStyle);
+		int clientX = mAppInfo.windowPosX;
+		int clientY = mAppInfo.windowPosY;
+		int clientWidth = mAppInfo.windowWidth;
+		int clientHeight = mAppInfo.windowHeight;
 
-		winPosX += borderRect.left;
-		winPosY += borderRect.top;
-		winWidth += borderRect.right - borderRect.left;
-		winHeight += borderRect.bottom - borderRect.top;
+		int winPosX = clientX;
+		int winPosY = clientY;
+		int winWidth = clientWidth;
+		int winHeight = clientHeight;
+
+		if (mAppInfo.centerWindow)
+		{
+			winPosX = CW_USEDEFAULT;
+			winPosY = CW_USEDEFAULT;
+		}
+		else
+		{
+			RECT borderRect = { 0,0,0,0 };
+			AdjustWindowRectEx(&borderRect, windowStyle, 0, windowExStyle);
+
+			winPosX += borderRect.left;
+			winPosY += borderRect.top;
+			winWidth += borderRect.right - borderRect.left;
+			winHeight += borderRect.bottom - borderRect.top;
+		}
 
 		mWindowHandle = CreateWindowExA(
 			windowExStyle,

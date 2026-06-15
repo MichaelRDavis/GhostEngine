@@ -15,16 +15,18 @@ struct ApplicationInfo
 	int windowHeight;
 	bool isWindowed;
 	bool hasConsole;
+	bool centerWindow;
 
 	ApplicationInfo()
 	{
 		appName = "\0";
 		windowPosX = 0;
-		windowPosX = 0;
+		windowPosY = 0;
 		windowWidth = 0;
 		windowHeight = 0;
 		isWindowed = false;
 		hasConsole = false;
+		centerWindow = false;
 	}
 };
 
