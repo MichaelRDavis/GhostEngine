@@ -16,6 +16,11 @@ public:
 	void AppRun();
 	void AppExit();
 
+	inline void* GetWindowHandle() const
+	{
+		return mWindowHandle;
+	}
+
 private:
 	void HandleMessages();
 

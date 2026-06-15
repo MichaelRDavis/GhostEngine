@@ -40,6 +40,11 @@ public:
 	virtual void AppRun() {}
 	virtual void AppExit() {}
 
+	inline void* GetWindowHandle() const
+	{
+		return nullptr;
+	}
+
 	inline bool IsAppRunning() const
 	{
 		return mIsAppRunning;

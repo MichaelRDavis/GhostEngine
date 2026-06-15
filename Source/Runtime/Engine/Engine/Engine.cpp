@@ -3,6 +3,7 @@
 
 CEngine::CEngine()
 {
+	mEngineConfig = {};
 	mRenderer = nullptr;
 }
 
@@ -11,10 +12,12 @@ CEngine::~CEngine()
 	Destroy();
 }
 
-bool CEngine::Init()
+bool CEngine::Init(const EngineConfig& config, const RenderViewport& viewport)
 {
+	mEngineConfig = config;
+
 	mRenderer = new IRDI();
-	if (!mRenderer->Init())
+	if (!mRenderer->Init(viewport))
 	{
 		return false;
 	}

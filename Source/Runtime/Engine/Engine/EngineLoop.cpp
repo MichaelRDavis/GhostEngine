@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "Platform/Interface/IPlatform.h"
 #include "ApplicationCore/Interface/IApplication.h"
+#include "RendererCore/RendererTypes.h"
 
 CEngineLoop::CEngineLoop()
 {
@@ -30,8 +31,16 @@ void CEngineLoop::Init()
 		return;
 	}
 
+	RenderViewport viewport;
+	viewport.surface = mApp->GetWindowHandle();
+	viewport.width = appInfo.windowWidth;
+	viewport.height = appInfo.windowHeight;
+
+	EngineConfig engineConfig;
+	engineConfig.graphicsAPI = EGraphicsAPI::Opengl;
+
 	gEngine = new CEngine();
-	if (!gEngine->Init())
+	if (!gEngine->Init(engineConfig, viewport))
 	{
 		return;
 	}

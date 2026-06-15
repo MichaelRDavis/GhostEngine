@@ -1,6 +1,18 @@
 #pragma once
 
+struct RenderViewport;
 class IRDI;
+
+enum class EGraphicsAPI
+{
+	Opengl,
+	Vulkan
+};
+
+struct EngineConfig
+{
+	EGraphicsAPI graphicsAPI;
+};
 
 class CEngine
 {
@@ -8,10 +20,12 @@ public:
 	CEngine();
 	~CEngine();
 
-	virtual bool Init();
+	virtual bool Init(const EngineConfig& config, const RenderViewport& viewport);
 	virtual void Update();
 	virtual void Destroy();
 
 protected:
+	EngineConfig mEngineConfig;
+
 	IRDI* mRenderer;
 };
