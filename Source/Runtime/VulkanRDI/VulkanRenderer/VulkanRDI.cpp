@@ -10,10 +10,8 @@ CVulkanRDI::~CVulkanRDI()
 
 }
 
-bool CVulkanRDI::Init(const RenderViewport & viewport)
+bool CVulkanRDI::Init(const ViewportInfo& viewport)
 {
-	mRenderViewport = viewport;
-
 	return true;
 }
 

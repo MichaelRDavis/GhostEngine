@@ -14,7 +14,7 @@ CEngine::~CEngine()
 	Destroy();
 }
 
-bool CEngine::Init(const EngineConfig& config, const RenderViewport& viewport)
+bool CEngine::Init(const EngineConfig& config, const ViewportInfo& viewport)
 {
 	mEngineConfig = config;
 

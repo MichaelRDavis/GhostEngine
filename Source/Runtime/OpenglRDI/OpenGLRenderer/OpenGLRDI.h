@@ -14,7 +14,7 @@ public:
 	COpenGLRDI();
 	~COpenGLRDI();
 
-	virtual bool Init(const RenderViewport& viewport);
+	virtual bool Init(const ViewportInfo& viewport);
 	virtual void Render();
 	virtual void Destroy();
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RendererCore/RendererTypes.h"
+#include "RendererCore/IViewport.h"
 
 #ifdef RDI_EXPORT
 	#define RDI_API __declspec(dllexport)
@@ -14,10 +14,15 @@ public:
 	IRDI() {}
 	virtual ~IRDI() {}
 
-	virtual bool Init(const RenderViewport& viewport) { return true; }
+	virtual bool Init(const ViewportInfo& viewport) { return true; }
 	virtual void Render() {}
 	virtual void Destroy() {}
 
+	inline IViewport* GetViewport() const
+	{
+		return mViewport;
+	}
+
 protected:
-	RenderViewport mRenderViewport = {};
+	IViewport* mViewport = nullptr;
 };

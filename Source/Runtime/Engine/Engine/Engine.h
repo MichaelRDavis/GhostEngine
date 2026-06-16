@@ -1,6 +1,6 @@
 #pragma once
 
-struct RenderViewport;
+struct ViewportInfo;
 class IRDI;
 
 enum class EGraphicsAPI
@@ -20,7 +20,7 @@ public:
 	CEngine();
 	~CEngine();
 
-	virtual bool Init(const EngineConfig& config, const RenderViewport& viewport);
+	virtual bool Init(const EngineConfig& config, const ViewportInfo& viewport);
 	virtual void Update();
 	virtual void Destroy();
 

@@ -10,10 +10,8 @@ COpenGLRDI::~COpenGLRDI()
 
 }
 
-bool COpenGLRDI::Init(const RenderViewport & viewport)
+bool COpenGLRDI::Init(const ViewportInfo & viewport)
 {
-	mRenderViewport = viewport;
-
 	return true;
 }
 
