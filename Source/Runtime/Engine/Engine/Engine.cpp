@@ -1,5 +1,7 @@
 #include "Engine.h"
 #include "Renderer/IRDI.h"
+#include "OpenGLRenderer/OpenGLRDI.h"
+#include "VulkanRenderer/VulkanRDI.h"
 
 CEngine::CEngine()
 {
@@ -16,7 +18,15 @@ bool CEngine::Init(const EngineConfig& config, const RenderViewport& viewport)
 {
 	mEngineConfig = config;
 
-	mRenderer = new IRDI();
+	if (mEngineConfig.graphicsAPI == EGraphicsAPI::OpenGL)
+	{
+		mRenderer = new COpenGLRDI();
+	}
+	else if (mEngineConfig.graphicsAPI == EGraphicsAPI::Vulkan)
+	{
+		mRenderer = new CVulkanRDI();
+	}
+
 	if (!mRenderer->Init(viewport))
 	{
 		return false;

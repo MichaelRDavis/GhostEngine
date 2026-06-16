@@ -37,7 +37,7 @@ void CEngineLoop::Init()
 	viewport.height = appInfo.windowHeight;
 
 	EngineConfig engineConfig;
-	engineConfig.graphicsAPI = EGraphicsAPI::Opengl;
+	engineConfig.graphicsAPI = EGraphicsAPI::OpenGL;
 
 	gEngine = new CEngine();
 	if (!gEngine->Init(engineConfig, viewport))

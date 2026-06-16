@@ -5,7 +5,7 @@ class IRDI;
 
 enum class EGraphicsAPI
 {
-	Opengl,
+	OpenGL,
 	Vulkan
 };
 

@@ -28,6 +28,8 @@ workspace "GhostEngine"
         project "Engine"
         project "Core"
         project "RDI"
+        project "OpenGLRDI"
+        project "VulkanRDI"
 
     group "ThirdParty"
         project "glad"
@@ -93,6 +95,8 @@ project "Engine"
         "Source/Runtime/Engine",
         "Source/Runtime/Core",
         "Source/Runtime/RDI",
+        "Source/Runtime/OpenGLRDI",
+        "Source/Runtime/VulkanRDI",
         "Source/ThirdParty/SDL3-3.4.10/include"
     }
 
@@ -106,7 +110,91 @@ project "Engine"
     {
         "Core",
         "RDI",
+        "OpenGLRDI",
+        "VulkanRDI",
         "SDL3"
+    }
+
+project "VulkanRDI"
+    location "Source/Runtime/VulkanRDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+    
+    defines
+    {
+        "VULKANRDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/VulkanRDI/**.h",
+        "Source/Runtime/VulkanRDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/RDI",
+        "Source/Runtime/VulkanRDI",
+        "Source/ThirdParty/SDL3-3.4.10/include",
+    }
+
+    libdirs
+    {
+        "Binaries",
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
+    }
+
+    links
+    {
+        "Core",
+        "RDI",
+        "SDL3",
+    }
+
+project "OpenGLRDI"
+    location "Source/Runtime/OpenGLRDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+    
+    defines
+    {
+        "OPENGLRDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/OpenGLRDI/**.h",
+        "Source/Runtime/OpenGLRDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/RDI",
+        "Source/Runtime/OpenGLRDI",
+        "Source/ThirdParty/SDL3-3.4.10/include",
+        "Source/ThirdParty/glad/include"
+    }
+
+    libdirs
+    {
+        "Binaries",
+        "Source/ThirdParty/SDL3-3.4.10/lib/x64",
+    }
+
+    links
+    {
+        "Core",
+        "RDI",
+        "SDL3",
+        "glad",
     }
 
 project "RDI"
@@ -130,9 +218,9 @@ project "RDI"
 
     includedirs
     {
+        "Source/Runtime/Core",
         "Source/Runtime/RDI",
         "Source/ThirdParty/SDL3-3.4.10/include",
-        "Source/ThirdParty/glad/include"
     }
 
     libdirs
@@ -143,8 +231,8 @@ project "RDI"
 
     links
     {
+        "Core",
         "SDL3",
-        "glad",
     }
 
 project "Core"
