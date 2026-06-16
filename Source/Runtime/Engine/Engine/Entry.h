@@ -1,5 +1,8 @@
+#pragma once
+
 #include "Engine/EngineLoop.h"
 
+#ifdef _WIN64
 int main()
 {
 	CEngineLoop engineLoop;
@@ -8,3 +11,4 @@ int main()
 
 	return 0;
 }
+#endif
