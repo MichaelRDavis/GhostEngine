@@ -37,17 +37,14 @@ void IApplication::AppInit(const FWindowDefinition& definition)
 
 void IApplication::AppRun()
 {
-	while (mIsAppRunning)
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
 	{
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		switch (event.type)
 		{
-			switch (event.type)
-			{
-				case SDL_EVENT_QUIT:
-					AppExit();
-					break;
-			}
+			case SDL_EVENT_QUIT:
+				AppExit();
+				break;
 		}
 	}
 }
