@@ -21,8 +21,10 @@ void IApplication::AppInit(const FWindowDefinition& definition)
 	}
 
 	U32 windowFlags = 0;
-#ifdef GE_OPENGL_RENDERER
+#if defined(GE_OPENGL_RENDERER)
 	windowFlags = SDL_WINDOW_OPENGL;
+#elif defined(GE_VULKAN_RENDERER)
+	windowFlags = SDL_WINDOW_VULKAN;
 #endif
 
 	mWindow = SDL_CreateWindow(definition.title,definition.width, definition.height, windowFlags);

@@ -1,7 +1,9 @@
 #include "Platform/ApplicationCore/IApplication.h"
 
-#ifdef GE_OPENGL_RENDERER
-	#include "Renderer/OpenGLRenderer.h"
+#if defined(GE_OPENGL_RENDERER)
+	#include "Renderer/GDI/OpenGLGDI.h"
+#elif defined(GE_VULKAN_RENDERER)
+	#include "Renderer/GDI/VulkanGDI.h"
 #endif
 
 int main()
@@ -19,16 +21,25 @@ int main()
 	surface.surfaceHeight = window.height;
 	surface.surfaceWidth = window.width;
 
-	std::unique_ptr<IRenderer> renderer;
-#ifdef GE_OPENGL_RENDERER
-	renderer = std::make_unique<COpenGLRenderer>();
+	std::unique_ptr<IGDI> graphicsDevice;
+#if defined(GE_OPENGL_RENDERER)
+	graphicsDevice = std::make_unique<COpenGLGDI>();
+#elif defined(GE_VULKAN_RENDERER)
+	graphicsDevice = std::make_unique<CVulkanGDI>();
 #endif
-	renderer->Init(surface);
+	graphicsDevice->Init(surface);
+
+	FMesh triangle;
+	triangle.vertices.push_back(FVec3(-0.5f, -0.5f, 0.0f));
+	triangle.vertices.push_back(FVec3(0.5f, -0.5f, 0.0f));
+	triangle.vertices.push_back(FVec3(0.0f, 0.5f, 0.0f));
+
+	graphicsDevice->SubmitMesh(triangle);
 
 	while (app.IsAppRunning())
 	{
 		app.AppRun();
-		renderer->Render();
+		graphicsDevice->Render();
 	}
 
 	return 0;

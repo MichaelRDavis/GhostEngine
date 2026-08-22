@@ -1,18 +1,22 @@
 #pragma once
 
-#include "IRenderer.h"
+#include "IGDI.h"
 
-class COpenGLRenderer : public IRenderer
+#ifdef GE_OPENGL_RENDERER
+class COpenGLGDI : public IGDI
 {
 public:
-	COpenGLRenderer();
-	~COpenGLRenderer();
+	COpenGLGDI();
+	~COpenGLGDI();
 
 	void Init(const FRenderSurface& surface);
 	void Render();
 	void Destroy();
 
+	void SubmitMesh(const FMesh& mesh);
+
 private:
 	SDL_GLContext mContext;
 	FRenderSurface mRenderSurface;
 };
+#endif

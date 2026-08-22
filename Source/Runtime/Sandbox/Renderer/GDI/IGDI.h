@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform/PlatformHeader.h"
+#include "Renderer/RenderCore/RendererTypes.h"
 
 struct FRenderSurface
 {
@@ -9,13 +10,15 @@ struct FRenderSurface
 	I32 surfaceHeight;
 };
 
-class IRenderer
+class IGDI
 {
 public:
-	IRenderer() {}
-	virtual ~IRenderer() {}
+	IGDI() {}
+	virtual ~IGDI() {}
 
 	virtual void Init(const FRenderSurface& surface) {}
 	virtual void Render() {}
 	virtual void Destroy() {}
+
+	virtual void SubmitMesh(const FMesh& mesh) {}
 };
