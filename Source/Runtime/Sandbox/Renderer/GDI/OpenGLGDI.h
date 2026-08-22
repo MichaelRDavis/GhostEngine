@@ -15,6 +15,14 @@ public:
 
 	void SubmitMesh(const FMesh& mesh);
 
+	void CreateVertexArray();
+
+	void CreateVertexBuffer(U32 size, void* data, EBufferUsage usage);
+
+	void CreateIndexBuffer(U32 size, void* data, EBufferUsage usage);
+
+	void AddVertexAttribute(U32 index, U32 size, U32 stride, U32 offset);
+
 private:
 	SDL_GLContext mContext;
 	FRenderSurface mRenderSurface;

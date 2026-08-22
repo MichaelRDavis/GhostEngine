@@ -60,19 +60,70 @@ void COpenGLGDI::SubmitMesh(const FMesh& mesh)
 		meshData.push_back(mesh.vertices[i].z);
 	}
 
+	CreateVertexArray();
+
+	CreateVertexBuffer(meshData.size() * sizeof(F32), &meshData[0], EBufferUsage::Static);
+
+	if (mesh.indices.size() > 0)
+	{
+		CreateIndexBuffer(mesh.indices.size() * sizeof(F32), (void*)&mesh.indices[0], EBufferUsage::Static);
+	}
+
+	AddVertexAttribute(0, 3, 3 * sizeof(F32), 0);
+}
+
+void COpenGLGDI::CreateVertexArray()
+{
 	U32 vertexArray;
 	glGenVertexArrays(1, &vertexArray);
 	glBindVertexArray(vertexArray);
+}
 
+void COpenGLGDI::CreateVertexBuffer(U32 size, void* data, EBufferUsage usage)
+{
 	FVeretxBuffer buffer;
-	buffer.size = meshData.size() * sizeof(F32);
-	buffer.data = &meshData[0];
+	buffer.size = size;
+	buffer.data = data;
+
+	GLenum bufferUsage = 0;
+	if (usage == EBufferUsage::Static)
+	{
+		bufferUsage = GL_STATIC_DRAW;
+	}
+	else if (usage == EBufferUsage::Dynamic)
+	{
+		bufferUsage = GL_DYNAMIC_DRAW;
+	}
+
 	glGenBuffers(1, &buffer.bufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer.bufferID);
-	glBufferData(GL_ARRAY_BUFFER, buffer.size, buffer.data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, buffer.size, buffer.data, bufferUsage);
+}
 
-	U32 stride = 3 * sizeof(F32);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, 0);
+void COpenGLGDI::CreateIndexBuffer(U32 size, void* data, EBufferUsage usage)
+{
+	FIndexBuffer buffer;
+	buffer.size = size;
+	buffer.data = data;
+
+	GLenum bufferUsage = 0;
+	if (usage == EBufferUsage::Static)
+	{
+		bufferUsage = GL_STATIC_DRAW;
+	}
+	else if (usage == EBufferUsage::Dynamic)
+	{
+		bufferUsage = GL_DYNAMIC_DRAW;
+	}
+
+	glGenBuffers(1, &buffer.bufferID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.bufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer.size, buffer.data, bufferUsage);
+}
+
+void COpenGLGDI::AddVertexAttribute(U32 index, U32 size, U32 stride, U32 offset)
+{
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 }
 #endif

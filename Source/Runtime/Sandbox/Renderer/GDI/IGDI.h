@@ -21,4 +21,11 @@ public:
 	virtual void Destroy() {}
 
 	virtual void SubmitMesh(const FMesh& mesh) {}
+
+	virtual void CreateVertexArray() {}
+
+	virtual void CreateVertexBuffer(U32 size, void* data, EBufferUsage usage) {}
+	virtual void CreateIndexBuffer(U32 size, void* data, EBufferUsage usage) {}
+
+	virtual void AddVertexAttribute(U32 index, U32 size, U32 stride, U32 offset) {}
 };
