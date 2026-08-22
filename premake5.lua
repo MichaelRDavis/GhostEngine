@@ -10,7 +10,7 @@ workspace "GhostEngine"
         "x64"
     }
 
-    startproject "Engine"
+    startproject "Sandbox"
 
     filter { "configurations:Debug" }
         symbols "On"
@@ -22,13 +22,13 @@ workspace "GhostEngine"
         architecture "x86_64"
 
     group "Engine"
-        project "Engine"
+        project "Sandbox"
 
     group "ThirdParty"
         project "glad"
 
-project "Engine"
-    location "Source/Runtime/Engine"
+project "Sandbox"
+    location "Source/Runtime/Sandbox"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++11"
@@ -37,13 +37,13 @@ project "Engine"
 
     files 
     {
-        "Source/Runtime/Engine/**.h",
-        "Source/Runtime/Engine/**.cpp"
+        "Source/Runtime/Sandbox/**.h",
+        "Source/Runtime/Sandbox/**.cpp"
     }
 
     includedirs
     {
-        "Source/Runtime/Engine",
+        "Source/Runtime/Sandbox",
         "Source/ThirdParty/SDL3-3.4.10/include",
         "Source/ThirdParty/glad/include"
     }
