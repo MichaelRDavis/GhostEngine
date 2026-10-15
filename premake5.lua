@@ -22,10 +22,9 @@ workspace "GhostEngine"
         architecture "x86_64"
 
     group "Engine"
+        project "Engine"
+    group "Editor"
         project "Sandbox"
-
-    group "ThirdParty"
-        project "glad"
 
 project "Sandbox"
     location "Source/Runtime/Sandbox"
@@ -44,36 +43,55 @@ project "Sandbox"
     includedirs
     {
         "Source/Runtime/Sandbox",
+        "Source/Runtime/Engine",
+
         "Source/ThirdParty/SDL3-3.4.10/include",
-        "Source/ThirdParty/glad/include"
     }
 
     libdirs
     {
         "Binaries",
+    }
+
+    links
+    {
+        "Engine",
+    }
+
+project "Engine"
+    location "Source/Runtime/Engine"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "ENGINE_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/Engine/**.h",
+        "Source/Runtime/Engine/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Engine",
+
+        "Source/ThirdParty/SDL3-3.4.10/include",
+    }
+
+    libdirs
+    {
+        "Binaries",
+
         "Source/ThirdParty/SDL3-3.4.10/lib/x64"
     }
 
     links
     {
         "SDL3",
-        "glad"
-    }
-
-project "glad"
-    location "Source/ThirdParty/glad"
-    kind "StaticLib"
-    language "C"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    files 
-    {
-        "Source/ThirdParty/glad/include/**.h",
-        "Source/ThirdParty/glad/src/**.c"
-    }
-
-    includedirs
-    {
-       "Source/ThirdParty/glad/include"
     }
