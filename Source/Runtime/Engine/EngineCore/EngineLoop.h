@@ -2,6 +2,7 @@
 
 #include "EngineHeader.h"
 
+class IApplication;
 class CEngine;
 
 class ENGINE_API CEngineLoop
@@ -10,11 +11,14 @@ public:
 	CEngineLoop();
 	virtual ~CEngineLoop();
 
-	virtual void InitializeEngine();
+	virtual void Init();
 
-	virtual void RunEngine();
+	virtual void Run();
 
-	virtual void DestroyEngine();
+	virtual void Exit();
+
+private:
+	IApplication* mApp;
 };
 
 extern CEngine* gEngine = nullptr;

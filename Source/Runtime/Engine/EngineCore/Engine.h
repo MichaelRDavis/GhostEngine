@@ -8,7 +8,7 @@ public:
 	CEngine();
 	virtual ~CEngine();
 
-	virtual void Initialize();
+	virtual void Init();
 	virtual void Update();
 	virtual void Destroy();
 };

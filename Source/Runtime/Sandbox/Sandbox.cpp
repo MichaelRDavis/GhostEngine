@@ -3,8 +3,8 @@
 int main()
 {
 	CEngineLoop engineLoop;
-	engineLoop.InitializeEngine();
-	engineLoop.RunEngine();
+	engineLoop.Init();
+	engineLoop.Run();
 
 	return 0;
 }

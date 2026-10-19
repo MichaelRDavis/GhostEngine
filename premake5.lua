@@ -22,6 +22,8 @@ workspace "GhostEngine"
         architecture "x86_64"
 
     group "Engine"
+        project "Core"
+        project "VulkanRDI"
         project "Engine"
     group "Editor"
         project "Sandbox"
@@ -42,10 +44,10 @@ project "Sandbox"
 
     includedirs
     {
-        "Source/Runtime/Sandbox",
+        "Source/Runtime/Core",
+        "Source/Runtime/VulkanRDI",
         "Source/Runtime/Engine",
-
-        "Source/ThirdParty/SDL3-3.4.10/include",
+        "Source/Runtime/Sandbox"
     }
 
     libdirs
@@ -55,7 +57,9 @@ project "Sandbox"
 
     links
     {
-        "Engine",
+        "Core",
+        "VulkanRDI",
+        "Engine"
     }
 
 project "Engine"
@@ -79,19 +83,87 @@ project "Engine"
 
     includedirs
     {
-        "Source/Runtime/Engine",
+        "Source/Runtime/Core",
+        "Source/Runtime/VulkanRDI",
+        "Source/Runtime/Engine"
+    }
 
-        "Source/ThirdParty/SDL3-3.4.10/include",
+    libdirs
+    {
+        "Binaries",
+    }
+
+    links
+    {
+        "Core",
+        "VulkanRDI"
+    }
+
+project "VulkanRDI"
+    location "Source/Runtime/VulkanRDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "VULKANRDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/VulkanRDI/**.h",
+        "Source/Runtime/VulkanRDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/VulkanRDI",
+
+        "C:/VulkanSDK/1.4.357.0/Include"
     }
 
     libdirs
     {
         "Binaries",
 
-        "Source/ThirdParty/SDL3-3.4.10/lib/x64"
+        "C:/VulkanSDK/1.4.357.0/Lib"
     }
 
     links
     {
-        "SDL3",
+        "Core",
+    }
+
+
+project "Core"
+    location "Source/Runtime/Core"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "CORE_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/Core/**.h",
+        "Source/Runtime/Core/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+    }
+
+    libdirs
+    {
+        "Binaries",
     }

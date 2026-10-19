@@ -1,28 +1,49 @@
 #include "EngineLoop.h"
 #include "Engine.h"
+#include "Platform/Interface/IPlatform.h"
+#include "Platform/Interface/IApplication.h"
 
 CEngineLoop::CEngineLoop()
 {
-	
+	mApp = nullptr;
 }
 
 CEngineLoop::~CEngineLoop()
 {
-	DestroyEngine();
+	Exit();
 }
 
-void CEngineLoop::InitializeEngine()
+void CEngineLoop::Init()
 {
+	mApp = IPlatform::CreateApplication();
+
+	FWindowDefintion windowDef;
+	windowDef.title = "Sandbox";
+	windowDef.width = 1920;
+	windowDef.height = 1080;
+
+	mApp->Init(windowDef);
+
 	gEngine = new CEngine();
-	gEngine->Initialize();
+	gEngine->Init();
 }
 
-void CEngineLoop::RunEngine()
+void CEngineLoop::Run()
 {
-	gEngine->Update();
+	while (true)
+	{
+		mApp->HandleMessages();
+		gEngine->Update();
+	}
 }
 
-void CEngineLoop::DestroyEngine()
+void CEngineLoop::Exit()
 {
 	gEngine->Destroy();
+	delete gEngine;
+	gEngine = nullptr;
+
+	mApp->Exit();
+	delete mApp;
+	mApp = nullptr;
 }

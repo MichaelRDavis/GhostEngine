@@ -10,7 +10,7 @@ CEngine::~CEngine()
 	
 }
 
-void CEngine::Initialize()
+void CEngine::Init()
 {
 
 }
