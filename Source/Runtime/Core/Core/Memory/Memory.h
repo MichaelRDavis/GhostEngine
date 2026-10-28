@@ -1,15 +1,17 @@
 #pragma once
 
-#include "CoreHeader.h"
+#include "Core.h"
 
-class CMemory
+class CORE_API CMemory
 {
 public:
-	static void* Malloc(U64 size, U8 align);
+	static void* Alloc(U64 size, U64 alignment = 0, bool isAligned = false);
 
-	static void Free(void* ptr, U8 align);
+	static void* Copy(void* dest, const void* src, U64 size);
 
-	static void* Memset(void* ptr, I32 value, U64 size);
+	static void* Zero(void* ptr, U64 size);
 
-	static void* Memcpy(void* dest, const void* src, U64 size);
+	static void* Set(void* ptr, I32 value, U64 size);
+
+	static void Free(void* ptr, bool isAligned = false);
 };

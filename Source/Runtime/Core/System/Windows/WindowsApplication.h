@@ -1,25 +1,28 @@
 #pragma once
 
-#include "Platform/Interface/IApplication.h"
+#include "System/SystemInterface/IApplication.h"
 
-#ifdef GHOST_PLATFORM_WINDOWS
+#ifdef GHOST_SYSTEM_WINDOWS
 class CWindowsApplication : public IApplication
 {
 public:
-	CWindowsApplication();
+	CWindowsApplication(const FWindowDescription& winDesc);
 	~CWindowsApplication();
 
-	void Init(const FWindowDefintion& winDef);
-
-	void Exit();
-
-	void HandleMessages();
+	void Init();
+	void Run();
+	void Destroy();
 
 private:
+	void HandleMessages();
+
 	static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
+	FWindowDescription mWindowDesc;
+
 	HINSTANCE mAppInstance;
 	HWND mWindowHandle;
+	HMONITOR mMonitor;
 };
 #endif

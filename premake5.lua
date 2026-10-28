@@ -6,7 +6,7 @@ workspace "GhostEngine"
     }
 
     platforms
-    {   -- VS 2026 does not support custom platform names
+    { 
         "x64"
     }
 
@@ -23,8 +23,6 @@ workspace "GhostEngine"
 
     group "Engine"
         project "Core"
-        project "VulkanRDI"
-        project "Engine"
     group "Editor"
         project "Sandbox"
 
@@ -44,100 +42,19 @@ project "Sandbox"
 
     includedirs
     {
-        "Source/Runtime/Core",
-        "Source/Runtime/VulkanRDI",
-        "Source/Runtime/Engine",
-        "Source/Runtime/Sandbox"
+        "Source/Runtime/Sandbox",
+        "Source/Runtime/Core"
     }
 
     libdirs
     {
-        "Binaries",
+        "Binaries"
     }
 
     links
     {
-        "Core",
-        "VulkanRDI",
-        "Engine"
+        "Core"
     }
-
-project "Engine"
-    location "Source/Runtime/Engine"
-    kind "SharedLib"
-    language "C++"
-    cppdialect "C++11"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    defines
-    {
-        "ENGINE_EXPORT"
-    }
-
-    files 
-    {
-        "Source/Runtime/Engine/**.h",
-        "Source/Runtime/Engine/**.cpp"
-    }
-
-    includedirs
-    {
-        "Source/Runtime/Core",
-        "Source/Runtime/VulkanRDI",
-        "Source/Runtime/Engine"
-    }
-
-    libdirs
-    {
-        "Binaries",
-    }
-
-    links
-    {
-        "Core",
-        "VulkanRDI"
-    }
-
-project "VulkanRDI"
-    location "Source/Runtime/VulkanRDI"
-    kind "SharedLib"
-    language "C++"
-    cppdialect "C++11"
-    targetdir "Binaries"
-    objdir "Intermediates"
-
-    defines
-    {
-        "VULKANRDI_EXPORT"
-    }
-
-    files 
-    {
-        "Source/Runtime/VulkanRDI/**.h",
-        "Source/Runtime/VulkanRDI/**.cpp"
-    }
-
-    includedirs
-    {
-        "Source/Runtime/Core",
-        "Source/Runtime/VulkanRDI",
-
-        "C:/VulkanSDK/1.4.357.0/Include"
-    }
-
-    libdirs
-    {
-        "Binaries",
-
-        "C:/VulkanSDK/1.4.357.0/Lib"
-    }
-
-    links
-    {
-        "Core",
-    }
-
 
 project "Core"
     location "Source/Runtime/Core"
@@ -160,10 +77,10 @@ project "Core"
 
     includedirs
     {
-        "Source/Runtime/Core",
+        "Source/Runtime/Core"
     }
 
     libdirs
     {
-        "Binaries",
+        "Binaries"
     }
