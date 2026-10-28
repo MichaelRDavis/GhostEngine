@@ -28,7 +28,7 @@ workspace "GhostEngine"
 
 project "Sandbox"
     location "Source/Runtime/Sandbox"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
     cppdialect "C++11"
     targetdir "Binaries"
@@ -43,7 +43,7 @@ project "Sandbox"
     includedirs
     {
         "Source/Runtime/Sandbox",
-        "Source/Runtime/Core"
+        "Source/Runtime/Core",
     }
 
     libdirs

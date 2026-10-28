@@ -5,19 +5,16 @@
 struct FWindowDescription;
 class IApplication;
 
-struct FSystemInfo
-{
-	
-};
-
 class CORE_API ISystem
 {
 public:
-	static FSystemInfo GetSystemInfo();
-
 	static IApplication* CreateApplication(const FWindowDescription& winDesc);
 
-	static void ConsoleWriteLine(const char* msg, U8 msgColor, bool isError = false);
+	static void CreateConsole();
 
-	static void Sleep(U64 ms);
+	static void DestroyConsole();
+
+	static void DisplayMessageBox(const char* msg, const char* caption);
+
+	static void PlayMessageBeep();
 };
