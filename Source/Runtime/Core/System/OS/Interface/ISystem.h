@@ -2,13 +2,19 @@
 
 #include "Core.h"
 
-struct FWindowDescription;
 class IApplication;
+
+struct SSystemInfo
+{
+
+};
 
 class CORE_API ISystem
 {
 public:
-	static IApplication* CreateApplication(const FWindowDescription& winDesc);
+	static IApplication* CreateApplication();
+
+	static SSystemInfo GetSystemInfo();
 
 	static void CreateConsole();
 

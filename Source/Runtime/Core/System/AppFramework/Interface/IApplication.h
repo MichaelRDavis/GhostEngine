@@ -2,7 +2,7 @@
 
 #include "Core.h"
 
-struct FWindowDescription;
+struct SWindowDescription;
 class IWindow;
 
 class CORE_API IApplication
@@ -11,7 +11,7 @@ public:
 	IApplication() {}
 	~IApplication() {}
 
-	static IWindow* InitWindow(const FWindowDescription& winDesc) {return nullptr;}
+	virtual void MakeWindow(const SWindowDescription& winDesc) {}
 
 	virtual void Init() {}
 	virtual void Run() {}

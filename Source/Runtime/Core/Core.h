@@ -13,6 +13,11 @@
 
 #include "System/AppFramework/Interface/IApplication.h"
 #include "System/AppFramework/Interface/IWindow.h"
-#include "System/SystemOS/Interface/ISystem.h"
-
+#include "System/OS/Interface/ISystem.h"
 #include "Core/Logging/Log.h"
+#include "Core/Math/Math.h"
+#include "Core/Library/Containers/Array.h"
+#include "Core/Library/Containers/DynamicArray.h"
+#include "Core/Library/SmartPointers/UniquePointer.h"
+#include "Core/Library/SmartPointers/SharedPointer.h"
+#include "Core/ObjectModel/GameObject.h"

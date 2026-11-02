@@ -11,7 +11,7 @@ enum class EWindowMode
 	Windowed
 };
 
-struct FWindowDescription
+struct SWindowDescription
 {
 	const char* title;
 	EWindowMode windowMode;
@@ -26,7 +26,7 @@ struct FWindowDescription
 class CORE_API IWindow
 {
 public:
-	IWindow(IApplication* appOwner, const FWindowDescription winDesc) {}
+	IWindow(IApplication* appOwner, const SWindowDescription& winDesc) {}
 	virtual ~IWindow() {}
 
 	virtual void Init() {}

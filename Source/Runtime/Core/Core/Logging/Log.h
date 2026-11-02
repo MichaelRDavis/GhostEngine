@@ -13,7 +13,7 @@ enum class ELogVerbosity
 	VeryVerbose
 };
 
-struct FLogEntry
+struct SLogEntry
 {
 	const char* category;
 	const char* msg;

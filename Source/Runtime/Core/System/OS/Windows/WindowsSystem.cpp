@@ -1,9 +1,17 @@
-#include "System/SystemOS/Interface/ISystem.h"
+#include "System/OS/Interface/ISystem.h"
+#include "System/AppFramework/Windows/WindowsApplication.h"
 
 #ifdef GHOST_SYSTEM_WINDOWS
-IApplication* ISystem::CreateApplication(const FWindowDescription& winDesc)
+IApplication* ISystem::CreateApplication()
 {
-	return nullptr;
+	return new CWindowsApplication();
+}
+
+SSystemInfo ISystem::GetSystemInfo()
+{
+	SSystemInfo info;
+
+	return info;
 }
 
 void ISystem::CreateConsole()
