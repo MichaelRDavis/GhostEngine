@@ -16,6 +16,7 @@
 #include "System/OS/Interface/ISystem.h"
 #include "Core/Logging/Log.h"
 #include "Core/Math/Math.h"
+#include "Core/MemoryAllocation/Memory.h"
 #include "Core/Library/Containers/Array.h"
 #include "Core/Library/Containers/DynamicArray.h"
 #include "Core/Library/SmartPointers/UniquePointer.h"

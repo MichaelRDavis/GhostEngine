@@ -19,7 +19,6 @@ public:
 private:
 	CWindowsApplication* mAppOwner;
 	SWindowDescription mWinDesc;
-
 	HWND mWindowHandle;
 };
 #endif

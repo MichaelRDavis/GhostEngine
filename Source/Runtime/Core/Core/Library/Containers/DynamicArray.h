@@ -43,7 +43,7 @@ public:
 		if (mSize > 0)
 		{
 			mArray = Allocate(mSize);
-			for (U64 index = 0; if < mElements; i++)
+			for (U64 i = 0; i < mElements; i++)
 			{
 				mArray[i] = other.mArray[i];
 			}

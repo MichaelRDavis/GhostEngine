@@ -16,9 +16,7 @@ public:
 	void Destroy();
 
 	GHOST_INLINE static IWindow* GetWindow() { return mWindow; }
-
 	GHOST_INLINE static const char* GetWIndowClassName() { return mWinClassName; }
-
 	GHOST_INLINE HINSTANCE GetInstance() const { return mInstance; }
 
 private:
@@ -26,9 +24,7 @@ private:
 
 private:
 	static IWindow* mWindow;
-
 	static const char* mWinClassName;
-
 	HINSTANCE mInstance;
 };
 #endif

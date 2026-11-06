@@ -2,7 +2,7 @@
 
 #include "Core.h"
 
-enum class ELogVerbosity
+enum ELogVerbosity
 {
 	Fatal,
 	Error,
@@ -30,5 +30,15 @@ public:
 
 	static void Clear();
 
-	static void LogMessage(const char* msg);
+	static void LogMessage(ELogVerbosity verbosity, const char* msg, ...);
+
+private:
+	static void LogMessageToConsole(ELogVerbosity verbosity, const char* msg, bool isError = false);
+
+	static void LogMessageToIDE(const char* msg);
+
+private:
+	static std::vector<SLogEntry> mLogEntries;
 };
+
+#define GHOST_LOG(verbosity, msg, ...) CLog::LogMessage(verbosity, msg, __VA_ARGS__)

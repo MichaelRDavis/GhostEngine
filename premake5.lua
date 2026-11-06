@@ -1,8 +1,10 @@
 workspace "GhostEngine"
     configurations 
     {
-        "Debug",
-        "Release",
+        "DebugGame",
+        "ReleaseGame",
+        "DebugEditor",
+        "ReleaseEditor"
     }
 
     platforms
@@ -12,10 +14,18 @@ workspace "GhostEngine"
 
     startproject "Sandbox"
 
-    filter { "configurations:Debug" }
+    filter { "configurations:DebugGame" }
         symbols "On"
-    filter { "configurations:Release" }
+        defines "GHOST_DEBUG_GAME"
+    filter { "configurations:ReleaseGame" }
         optimize "On"
+        defines "GHOST_RELEAE_GAME"
+    filter { "configurations:DebugEditor" }
+        symbols "On"
+        defines "GHOST_DEBUG_EDITOR"
+    filter { "configurations:ReleaseEditor" }
+        optimize "On"
+         defines "GHOST_RELEASE_EDITOR"
 
     filter { "platforms:x64" }
         system "Windows"
@@ -23,6 +33,7 @@ workspace "GhostEngine"
 
     group "Engine"
         project "Core"
+        project "Engine"
     group "Editor"
         project "Sandbox"
 
@@ -43,7 +54,44 @@ project "Sandbox"
     includedirs
     {
         "Source/Runtime/Sandbox",
+        "Source/Runtime/Engine",
         "Source/Runtime/Core",
+    }
+
+    libdirs
+    {
+        "Binaries"
+    }
+
+    links
+    {
+        "Core",
+        "Engine"
+    }
+
+project "Engine"
+    location "Source/Runtime/Engine"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "ENGINE_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/Engine/**.h",
+        "Source/Runtime/Engine/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/Engine"
     }
 
     libdirs
