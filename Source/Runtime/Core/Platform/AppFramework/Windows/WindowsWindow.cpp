@@ -1,7 +1,7 @@
 #include "WindowsWindow.h"
 #include "WindowsApplication.h"
 
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 CWindowsWindow::CWindowsWindow(IApplication* appOwner, const SWindowDescription& winDesc)
 	: IWindow(appOwner, winDesc)
 {

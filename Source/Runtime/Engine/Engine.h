@@ -9,3 +9,6 @@
 #endif
 
 #include "Engine/EngineLoop/EngineLoop.h"
+#include "Engine/EngineFramework/IEngine.h"
+#include "Engine/EngineFramework/GameEngine.h"
+#include "Engine/EngineFramework/SandboxEngine.h"

@@ -1,5 +1,5 @@
 #pragma once
 
 #ifdef _WIN64
-#define GHOST_SYSTEM_WINDOWS
+#define GHOST_PLATFORM_WINDOWS
 #endif

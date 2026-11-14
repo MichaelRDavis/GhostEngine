@@ -4,7 +4,7 @@ void* CMemory::Allocate(U64 size, U64 alignment, bool isAligned)
 {
 	if (isAligned)
 	{
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 		return _aligned_malloc(size, alignment);
 #endif
 	}
@@ -16,7 +16,7 @@ void* CMemory::Reallocate(void* ptr, U64 size, U64 alignment, bool isAligned)
 {
 	if (isAligned)
 	{
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 		return _aligned_realloc(ptr, size, alignment);
 #endif
 	}
@@ -28,7 +28,7 @@ void CMemory::Free(void* ptr, bool isAligned)
 {
 	if (isAligned)
 	{
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 		_aligned_free(ptr);
 #endif
 	}
@@ -51,4 +51,14 @@ void* CMemory::Zero(void* ptr, U64 size)
 void* CMemory::Copy(void* dest, const void* src, U64 size)
 {
 	return memcpy(dest, src, size);
+}
+
+void* MemNew(U64 size, const char* file, I32 line)
+{
+	return nullptr;
+}
+
+void MemDelete(void* ptr)
+{
+	
 }

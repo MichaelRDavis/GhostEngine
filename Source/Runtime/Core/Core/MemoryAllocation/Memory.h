@@ -17,3 +17,9 @@ public:
 
 	static void* Copy(void* dest, const void* src, U64 size);
 };
+
+extern "C"
+{
+	void* MemNew(U64 size, const char* file, I32 line);
+	void MemDelete(void* ptr);
+}

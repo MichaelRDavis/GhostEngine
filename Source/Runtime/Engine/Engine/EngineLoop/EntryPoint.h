@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	CEngineLoop engineLoop;

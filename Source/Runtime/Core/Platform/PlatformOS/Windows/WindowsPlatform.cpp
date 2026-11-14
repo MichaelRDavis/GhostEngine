@@ -1,15 +1,15 @@
-#include "System/OS/Interface/ISystem.h"
-#include "System/AppFramework/Windows/WindowsApplication.h"
+#include "Platform/PlatformOS/Interface/IPlatform.h"
+#include "Platform/AppFramework/Windows/WindowsApplication.h"
 
-#ifdef GHOST_SYSTEM_WINDOWS
-IApplication* ISystem::CreateApplication()
+#ifdef GHOST_PLATFORM_WINDOWS
+IApplication* IPlatform::CreateApplication()
 {
 	return new CWindowsApplication();
 }
 
-SSystemInfo ISystem::GetSystemInfo()
+SPlatformInfo IPlatform::GetPlatformInfo()
 {
-	SSystemInfo info {};
+	SPlatformInfo info {};
 
 	I32 cpuInfo[4] = {-1};
 	__cpuid(cpuInfo, 0);
@@ -54,18 +54,23 @@ SSystemInfo ISystem::GetSystemInfo()
 	return info;
 }
 
-void ISystem::CreateConsole()
+void IPlatform::CreateConsole()
 {
 	AllocConsole();
 }
 
-void ISystem::DestroyConsole()
+void IPlatform::DestroyConsole()
 {
 	FreeConsole();
 }
 
-void ISystem::DisplayMessageBox(const char* msg, const char* caption)
+void IPlatform::DisplayMessageBox(const char* msg, const char* caption)
 {
 	MessageBoxA(nullptr, msg, caption, MB_ICONEXCLAMATION | MB_OK);
+}
+
+void IPlatform::Sleep(U64 ms)
+{
+	::Sleep(ms);
 }
 #endif

@@ -2,7 +2,7 @@
 
 #include "Core.h"
 
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 class CWindowsApplication;
 
 class CWindowsWindow : public IWindow

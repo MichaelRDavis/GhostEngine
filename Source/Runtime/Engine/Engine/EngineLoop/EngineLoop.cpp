@@ -3,6 +3,7 @@
 CEngineLoop::CEngineLoop()
 {
 	mEngineApp = nullptr;
+	mIsEngineRunning = false;
 }
 
 CEngineLoop::~CEngineLoop()
@@ -12,15 +13,17 @@ CEngineLoop::~CEngineLoop()
 
 void CEngineLoop::EngineInit()
 {
+	ITime::StartTimer();
 	CLog::Init();
 
 #if defined(GHOST_DEBUG_EDITOR) || defined(GHOST_DEBUG_GAME)
-	ISystem::CreateConsole();
+	IPlatform::CreateConsole();
 #endif
 	
-	SSystemInfo sysInfo = ISystem::GetSystemInfo();
-	GHOST_LOG(Log, "%s", sysInfo.cpuManufacturer);
-	GHOST_LOG(Log, "%s", sysInfo.cpuModel);
+	SPlatformInfo info = IPlatform::GetPlatformInfo();
+	GHOST_LOG(Log, "CPU: %s", info.cpuManufacturer);
+	GHOST_LOG(Log, "CPU: %s", info.cpuModel);
+	GHOST_LOG(Log, "CPU: %d", info.cpuNumCores);
 
 	SWindowDescription windowDesc;
 #if defined(GHOST_DEBUG_EDITOR) || defined(GHOST_RELEASE_EDITOR)
@@ -37,21 +40,43 @@ void CEngineLoop::EngineInit()
 	windowDesc.isHidden = false;
 #endif
 
-	mEngineApp = ISystem::CreateApplication();
+	mEngineApp = IPlatform::CreateApplication();
 	mEngineApp->Init();
 	mEngineApp->MakeWindow(windowDesc);
+
+#if defined(GHOST_DEBUG_EDITOR) || defined(GHOST_RELEASE_EDITOR)
+	gEngine = new CSandboxEngine();
+#elif defined(GHOST_DEBUG_GAME) || defined(GHOST_RELEASE_GAME)
+	gEngine = new CGameEngine();
+#endif
+
+	gEngine->Init();
+
+	mIsEngineRunning = true;
 }
 
 void CEngineLoop::EngineUpdate()
 {
-	while (true)
+	float deltaTime = ITime::GetAbsoluteTime();
+
+	while (mIsEngineRunning && mEngineApp->IsAppRunning())
 	{
 		mEngineApp->Run();
+		gEngine->Update(deltaTime);
 	}
 }
 
 void CEngineLoop::EngineExit()
 {
+	mIsEngineRunning = false;
+
+	if (gEngine != nullptr)
+	{
+		gEngine->Destroy();
+		delete gEngine;
+		gEngine = nullptr;
+	}
+
 	if (mEngineApp != nullptr)
 	{
 		mEngineApp->Destroy();
@@ -60,4 +85,11 @@ void CEngineLoop::EngineExit()
 	}
 
 	CLog::Destroy();
+}
+
+IEngine* gEngine = nullptr;
+
+IEngine* GetEngine()
+{
+	return gEngine;
 }

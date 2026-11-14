@@ -19,4 +19,5 @@ typedef double F64;
 #define GHOST_DLLEXPORT __declspec(dllexport)
 #define GHOST_DLLIMPORT __declspec(dllimport)
 #define GHOST_NULL nullptr
+#define GHOST_NOINHERIT final
 #endif

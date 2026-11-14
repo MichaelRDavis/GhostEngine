@@ -55,15 +55,15 @@ void CLog::LogMessage(ELogVerbosity verbosity, const char* msg, ...)
 	{
 	case ELogVerbosity::Fatal:
 		LogMessageToConsole(ELogVerbosity::Fatal, outputMessage, true);
-		ISystem::DisplayMessageBox(outputMessage, "Fatal");
+		IPlatform::DisplayMessageBox(outputMessage, "Fatal");
 		break;
 	case ELogVerbosity::Error:
 		LogMessageToConsole(ELogVerbosity::Error, outputMessage, true);
-		ISystem::DisplayMessageBox(outputMessage, "Error");
+		IPlatform::DisplayMessageBox(outputMessage, "Error");
 		break;
 	case ELogVerbosity::Warning:
 		LogMessageToConsole(ELogVerbosity::Warning, outputMessage, true);
-		ISystem::DisplayMessageBox(outputMessage, "Warning");
+		IPlatform::DisplayMessageBox(outputMessage, "Warning");
 		break;
 	case ELogVerbosity::Info:
 		LogMessageToConsole(ELogVerbosity::Info, outputMessage);
@@ -86,7 +86,7 @@ void CLog::LogMessage(ELogVerbosity verbosity, const char* msg, ...)
 
 void CLog::LogMessageToConsole(ELogVerbosity verbosity, const char* msg, bool isError)
 {
-#ifdef GHOST_SYSTEM_WINDOWS
+#ifdef GHOST_PLATFORM_WINDOWS
 	U64 length = strlen(msg);
 	LPDWORD numWritten = 0;
 
