@@ -17,7 +17,7 @@ public:
 	virtual void Run() {}
 	virtual void Destroy() {}
 
-	GHOST_INLINE static IWindow* GetWindow() {return nullptr;}
+	GHOST_INLINE virtual IWindow* GetWindow() {return nullptr;}
 
-	GHOST_INLINE static bool IsAppRunning() {return false;}
+	GHOST_INLINE virtual bool IsAppRunning() {return false;}
 };

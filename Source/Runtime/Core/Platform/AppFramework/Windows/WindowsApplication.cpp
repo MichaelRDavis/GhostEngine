@@ -2,13 +2,13 @@
 #include "WindowsWindow.h"
 
 #ifdef GHOST_PLATFORM_WINDOWS
-IWindow* CWindowsApplication::mWindow = nullptr;
 const char* CWindowsApplication::mWinClassName = "Win32Application"; 
-bool CWindowsApplication::mIsAppRunning = false;
 
 CWindowsApplication::CWindowsApplication()
 {
+	mWindow = nullptr;
 	mInstance = nullptr;
+	mIsAppRunning = false;
 }
 
 CWindowsApplication::~CWindowsApplication()
@@ -73,8 +73,6 @@ LRESULT CWindowsApplication::WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	switch (msg)
 	{
 		case WM_CLOSE:
-			mIsAppRunning = false;
-			mWindow->Destroy();
 			break;
 	}
 

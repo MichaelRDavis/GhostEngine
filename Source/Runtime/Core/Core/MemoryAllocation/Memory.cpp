@@ -1,27 +1,40 @@
 #include "Memory.h"
 
-void* CMemory::Allocate(U64 size, U64 alignment, bool isAligned)
+void* CMemory::Allocate(U64 size, EMemoryTag memTag, U64 alignment, bool isAligned)
 {
+	void* ptr = nullptr;
+
 	if (isAligned)
 	{
 #ifdef GHOST_PLATFORM_WINDOWS
-		return _aligned_malloc(size, alignment);
+		ptr = _aligned_malloc(size, alignment);
+		GHOST_TRACKMEMORY(ptr, memTag);
+		return ptr;
 #endif
 	}
 
-	return malloc(size);
+	ptr = malloc(size);
+	GHOST_TRACKMEMORY(ptr, memTag);
+	return ptr;
 }
 
-void* CMemory::Reallocate(void* ptr, U64 size, U64 alignment, bool isAligned)
+void* CMemory::Reallocate(void* ptr, U64 size, EMemoryTag memTag, U64 alignment, bool isAligned)
 {
+	GHOST_UNTRACKMEMORY(ptr);
+	void* newPtr = nullptr;
+
 	if (isAligned)
 	{
 #ifdef GHOST_PLATFORM_WINDOWS
-		return _aligned_realloc(ptr, size, alignment);
+		newPtr = _aligned_realloc(ptr, size, alignment);
+		GHOST_TRACKMEMORY(newPtr, memTag);
+		return newPtr;
 #endif
 	}
 
-	return realloc(ptr, size);
+	newPtr = realloc(ptr, size);
+	GHOST_TRACKMEMORY(newPtr, memTag);
+	return newPtr;
 }
 
 void CMemory::Free(void* ptr, bool isAligned)
@@ -29,11 +42,13 @@ void CMemory::Free(void* ptr, bool isAligned)
 	if (isAligned)
 	{
 #ifdef GHOST_PLATFORM_WINDOWS
+		GHOST_UNTRACKMEMORY(ptr);
 		_aligned_free(ptr);
 #endif
 	}
 	else
 	{
+		GHOST_UNTRACKMEMORY(ptr);
 		free(ptr);
 	}
 }
@@ -51,14 +66,4 @@ void* CMemory::Zero(void* ptr, U64 size)
 void* CMemory::Copy(void* dest, const void* src, U64 size)
 {
 	return memcpy(dest, src, size);
-}
-
-void* MemNew(U64 size, const char* file, I32 line)
-{
-	return nullptr;
-}
-
-void MemDelete(void* ptr)
-{
-	
 }

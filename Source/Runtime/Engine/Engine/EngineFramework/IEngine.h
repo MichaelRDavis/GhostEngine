@@ -5,10 +5,13 @@
 class ENGINE_API IEngine
 {
 public:
-	IEngine() {}
-	virtual ~IEngine() {}
+	IEngine();
+	virtual ~IEngine();
 
-	virtual void Init() {}
-	virtual void Update(F32 deltaTime) {}
-	virtual void Destroy() {}
+	virtual void Init(const SRenderViewport& viewport);
+	virtual void Update(F64 deltaTime);
+	virtual void Destroy();
+
+protected:
+	IRDI* mRenderer;
 };

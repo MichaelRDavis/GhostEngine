@@ -15,18 +15,18 @@ public:
 	void Run();
 	void Destroy();
 
-	GHOST_INLINE static IWindow* GetWindow() { return mWindow; }
-	GHOST_INLINE static const char* GetWIndowClassName() { return mWinClassName; }
+	GHOST_INLINE static const char* GetWindowClassName() { return mWinClassName; }
+	GHOST_INLINE IWindow* GetWindow() { return mWindow; }
 	GHOST_INLINE HINSTANCE GetInstance() const { return mInstance; }
-	GHOST_INLINE static bool IsAppRunning() { return mIsAppRunning; }
+	GHOST_INLINE bool IsAppRunning() { return mIsAppRunning; }
 
 private:
 	static LRESULT WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
-	static IWindow* mWindow;
 	static const char* mWinClassName;
+	IWindow* mWindow;
 	HINSTANCE mInstance;
-	static bool mIsAppRunning;
+	bool mIsAppRunning;
 };
 #endif

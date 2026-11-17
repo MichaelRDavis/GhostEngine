@@ -14,16 +14,22 @@ struct SAllocation
 class CORE_API CMemoryTracker
 {
 public:
-	static void Init(U64 maxMemAllocations);
+	static void Init();
 
-	static void AddAllocation(void* ptr, U64 size, const char* file, I32 line, EMemoryTag tag = EMemoryTag::MEMTAG_None);
+	static void TrackMemAlloc(void* ptr, U64 size, const char* file, I32 line, EMemoryTag tag);
 
-	static void RemoveAllocation(void* ptr);
+	static void UntrackMemAlloc(void* ptr);
 
-	static void ReportAllocations();
+	static void ReportMemAlloc();
 
 private:
-	static std::unordered_map<void*, SAllocation> mAllocations;
-	static U64 mMemoryAllocated;
-	static U64 mMaxMemoryAllocations;
+	static std::unordered_map<void*, SAllocation> mMemoryAllocations;
 };
+
+#if defined(GHOST_DEBUG_EDITOR) || defined(GHOST_DEBUG_GAME)
+#define GHOST_TRACKMEMORY(x, tag) CMemoryTracker::TrackMemAlloc(x, sizeof(x), __FILE__, __LINE__, tag);
+#define GHOST_UNTRACKMEMORY(x) CMemoryTracker::UntrackMemAlloc(x);
+#else 
+#define GHOST_TRACKMEMORY(x, tag)
+#define GHOST_UNTRACKMEMORY(x)
+#endif

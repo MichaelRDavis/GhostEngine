@@ -1,4 +1,6 @@
 #include "EngineLoop.h"
+#include "Engine/EngineFramework/GameEngine.h"
+#include "Engine/EngineFramework/SandboxEngine.h"
 
 CEngineLoop::CEngineLoop()
 {
@@ -50,14 +52,19 @@ void CEngineLoop::EngineInit()
 	gEngine = new CGameEngine();
 #endif
 
-	gEngine->Init();
+	SRenderViewport viewport;
+	viewport.viewportWidth = windowDesc.width;
+	viewport.viewportHeight = windowDesc.height;
+	viewport.windowHandle = mEngineApp->GetWindow()->GetWindowHandle();
+
+	gEngine->Init(viewport);
 
 	mIsEngineRunning = true;
 }
 
 void CEngineLoop::EngineUpdate()
 {
-	float deltaTime = ITime::GetAbsoluteTime();
+	F64 deltaTime = ITime::GetAbsoluteTime();
 
 	while (mIsEngineRunning && mEngineApp->IsAppRunning())
 	{

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core.h"
+#include "RDICore.h"
+#include "VulkanRDICore.h"
 
 #ifdef ENGINE_EXPORT
 	#define ENGINE_API GHOST_DLLEXPORT
@@ -9,6 +11,3 @@
 #endif
 
 #include "Engine/EngineLoop/EngineLoop.h"
-#include "Engine/EngineFramework/IEngine.h"
-#include "Engine/EngineFramework/GameEngine.h"
-#include "Engine/EngineFramework/SandboxEngine.h"

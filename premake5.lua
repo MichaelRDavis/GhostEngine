@@ -33,6 +33,8 @@ workspace "GhostEngine"
 
     group "Engine"
         project "Core"
+        project "RDI"
+        project "VulkanRDI"
         project "Engine"
     group "Editor"
         project "Sandbox"
@@ -55,7 +57,11 @@ project "Sandbox"
     {
         "Source/Runtime/Sandbox",
         "Source/Runtime/Engine",
+        "Source/Runtime/VulkanRDI",
+        "Source/Runtime/RDI",
         "Source/Runtime/Core",
+
+        "C:/VulkanSDK/1.4.357.0/Include"
     }
 
     libdirs
@@ -66,7 +72,9 @@ project "Sandbox"
     links
     {
         "Core",
-        "Engine"
+        "Engine",
+        "RDI",
+        "VulkanRDI"
     }
 
 project "Engine"
@@ -91,7 +99,91 @@ project "Engine"
     includedirs
     {
         "Source/Runtime/Core",
-        "Source/Runtime/Engine"
+        "Source/Runtime/RDI",
+        "Source/Runtime/VulkanRDI",
+        "Source/Runtime/Engine",
+
+        "C:/VulkanSDK/1.4.357.0/Include"
+    }
+
+    libdirs
+    {
+        "Binaries"
+    }
+
+    links
+    {
+        "Core",
+        "RDI",
+        "VulkanRDI"
+    }
+
+project "VulkanRDI"
+    location "Source/Runtime/VulkanRDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "VULKANRDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/VulkanRDI/**.h",
+        "Source/Runtime/VulkanRDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/RDI",
+        "Source/Runtime/VulkanRDI",
+
+        "C:/VulkanSDK/1.4.357.0/Include"
+    }
+
+    libdirs
+    {
+        "Binaries",
+
+        "C:/VulkanSDK/1.4.357.0/Lib"
+    }
+
+    links
+    {
+        "Core",
+        "RDI",
+
+        "volk"
+    }
+
+project "RDI"
+    location "Source/Runtime/RDI"
+    kind "SharedLib"
+    language "C++"
+    cppdialect "C++11"
+    targetdir "Binaries"
+    objdir "Intermediates"
+
+    defines
+    {
+        "RDI_EXPORT"
+    }
+
+    files 
+    {
+        "Source/Runtime/RDI/**.h",
+        "Source/Runtime/RDI/**.cpp"
+    }
+
+    includedirs
+    {
+        "Source/Runtime/Core",
+        "Source/Runtime/RDI"
     }
 
     libdirs

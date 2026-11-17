@@ -39,7 +39,7 @@ void CWindowsWindow::Init()
 
 	mWindowHandle = CreateWindowExA(
 		windowExStyle,
-		mAppOwner->GetWIndowClassName(),
+		mAppOwner->GetWindowClassName(),
 		mWinDesc.title,
 		windowStyle,
 		CW_USEDEFAULT,

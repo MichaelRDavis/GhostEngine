@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine.h"
+#include "Engine/EngineFramework/IEngine.h"
 
 class ENGINE_API CSandboxEngine : public IEngine
 {
